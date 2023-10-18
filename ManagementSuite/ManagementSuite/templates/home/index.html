@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Announcements {% endblock %}</h1>
+    {% for announcement in announcements %}
+        <div class='post'>
+            <h2>{{ announcement['Title'] }}</h2>
+            <p>{{ announcement['Content'] }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}
