@@ -8,11 +8,11 @@ with open('schema.sql') as f:
 
 cur = connection.cursor()
 
-cur.execute("INSERT INTO posts (title, content) VALUES (?, ?)",
+cur.execute("INSERT INTO announcements (title, content) VALUES (?, ?)",
             ('First Post', 'Content for the first post')
             )
 
-cur.execute("INSERT INTO posts (title, content) VALUES (?, ?)",
+cur.execute("INSERT INTO announcements (title, content) VALUES (?, ?)",
             ('Second Post', 'Content for the second post')
             )
 
