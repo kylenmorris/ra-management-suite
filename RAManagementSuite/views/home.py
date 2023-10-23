@@ -10,10 +10,10 @@ def index():
     return render_template('home/index.html', announcements=announcements)
 
 
-@home.route('/<int:announcement_id>')
+@home.route('/view/<int:announcement_id>')
 def announcement(announcement_id):
     announcement = announcementRepo.get_announcement(announcement_id)
-    return render_template('home/announcement.html', announcement=announcement)
+    return render_template('home/view.html', announcement=announcement)
 
 
 @home.route('/create', methods=('GET', 'POST'))
@@ -30,9 +30,9 @@ def create():
     return render_template('home/create.html')
 
 
-@home.route('/<int:id>/edit', methods=('GET', 'POST'))
-def edit(id):
-    announcement = announcementRepo.get_announcement(id)
+@home.route('/edit/<int:announcement_id>/', methods=('GET', 'POST'))
+def edit(announcement_id):
+    announcement = announcementRepo.get_announcement(announcement_id)
 
     if request.method == 'POST':
         title = request.form['title']
@@ -40,7 +40,7 @@ def edit(id):
         if not title:
             flash('Title is required!')
         else:
-            announcementRepo.edit_announcement(title, content, id)
+            announcementRepo.edit_announcement(title, content, announcement_id)
             return redirect(url_for('home.index'))
 
     return render_template('home/edit.html', announcement=announcement)

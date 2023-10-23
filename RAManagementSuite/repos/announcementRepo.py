@@ -44,6 +44,7 @@ def create_announcement(title, content):
     conn.commit()
     conn.close()
 
+
 def edit_announcement(title, content, id):
     """
     Edits an existing announcement.
