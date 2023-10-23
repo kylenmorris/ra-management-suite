@@ -3,10 +3,13 @@
 {% block content %}
     <h1>{% block title %} Welcome to FlaskBlog {% endblock %}</h1>
     {% for announcement in announcements %}
-        <a href="{{ url_for('announcement', announcement_id=announcement['id']) }}">
+        <a href="{{ url_for('home.announcement', announcement_id=announcement['id']) }}">
             <h2>{{ announcement['title'] }}</h2>
         </a>
         <span class="badge badge-primary">{{ announcement['created'] }}</span>
+            <a href="{{ url_for('home.edit', id=announcement['id']) }}">
+            <span class="badge badge-warning">Edit</span>
+        </a>
         <hr>
     {% endfor %}
 {% endblock %}
