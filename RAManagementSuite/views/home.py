@@ -1,5 +1,5 @@
 from flask import Flask, Blueprint, render_template, request, url_for, flash, redirect
-from repos import announcementRepo
+from RAManagementSuite.repos import announcementRepo
 
 home = Blueprint('home', __name__)
 
@@ -45,11 +45,8 @@ def edit(announcement_id):
 
     return render_template('home/edit.html', announcement=announcement)
 
-
-
-
-
-
-
+@home.route('/profile')
+def profile():
+    return render_template('home/profile.html')
 
 

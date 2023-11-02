@@ -1,8 +1,6 @@
-from flask import Flask, render_template, request, url_for, flash, redirect
-from views.home import home
+from RAManagementSuite import create_app
 
-app = Flask(__name__)
-app.register_blueprint(home)
+app = create_app()
 
 if __name__ == '__main__':
     app.run()

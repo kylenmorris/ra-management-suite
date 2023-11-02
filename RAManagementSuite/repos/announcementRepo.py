@@ -1,5 +1,5 @@
 import sqlite3
-from repos.baseRepo import get_db_connection
+from RAManagementSuite.repos.baseRepo import get_db_connection
 from werkzeug.exceptions import abort
 
 
