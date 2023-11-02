@@ -1,4 +1,6 @@
 from werkzeug.security import check_password_hash, generate_password_hash
+from RAManagementSuite.repos.baseRepo import get_db_connection
+
 
 def get_user(username):
     conn = get_db_connection()
