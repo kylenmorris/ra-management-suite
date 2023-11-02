@@ -1,16 +1,19 @@
-from werkzeug.security import check_password_hash, generate_password_hash
-from RAManagementSuite.repos.baseRepo import get_db_connection
+# userRepo.py
+
+from RAManagementSuite.models import User
+from RAManagementSuite.extensions import db
+from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.exceptions import abort
 
 
-def get_user(username):
-    conn = get_db_connection()
-    user = conn.execute('SELECT * FROM users WHERE username = ?', (username,)).fetchone()
-    conn.close()
-    return user
+def get_user_by_email(email):
+    return User.query.filter_by(email=email).first()
 
-def create_user(username, password, role):
-    conn = get_db_connection()
-    conn.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
-                 (username, generate_password_hash(password), role))
-    conn.commit()
-    conn.close()
+
+def create_user(email, name, password):
+    hashed_password = generate_password_hash(password)
+    user = User(email=email, name=name, password=hashed_password)
+    db.session.add(user)
+    db.session.commit()
+
+# Additional user operations can go here...
