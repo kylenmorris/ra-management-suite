@@ -1,5 +1,3 @@
-# userRepo.py
-
 from RAManagementSuite.models import User
 from RAManagementSuite.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash

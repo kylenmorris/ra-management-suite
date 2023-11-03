@@ -1,10 +1,28 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_user
+from werkzeug.security import check_password_hash
+
 from RAManagementSuite.repos import userRepo
 
 auth = Blueprint('auth', __name__)
 
-@auth.route('/login')
+
+@auth.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        remember = True if request.form.get('remember') else False
+
+        user = userRepo.get_user_by_email(email)
+
+        if not user or not check_password_hash(user.password, password):
+            flash('Please check your login details and try again.')
+            return redirect(url_for('auth.login'))
+
+        login_user(user, remember=remember)
+        return redirect(url_for('home.profile'))  # or wherever you want to redirect after a successful login
+
     return render_template('home/login.html')
 
 
@@ -26,7 +44,7 @@ def signup():
 
     return render_template('home/signup.html')
 
+
 @auth.route('/logout')
 def logout():
     return render_template('home/logout.html')
-
