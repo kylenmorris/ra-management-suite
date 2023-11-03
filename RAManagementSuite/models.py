@@ -33,3 +33,4 @@ class Event(db.Model):
     end_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     owner = db.relationship('User', backref=db.backref('events', lazy=True))
+    color = db.Column(db.String(7), default="#007BFF")

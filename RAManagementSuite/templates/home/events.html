@@ -3,6 +3,7 @@
 {% block title %}Events{% endblock %}
 
 {% block content %}
+
 <!-- Event creation modal -->
 <div class="modal" tabindex="-1" role="dialog" id="eventModal">
   <div class="modal-dialog" role="document">
@@ -21,6 +22,8 @@
             <input type="datetime-local" id="start_date" name="start_date" required><br><br>
             <label for="end_date">End Date:</label>
             <input type="datetime-local" id="end_date" name="end_date" required><br><br>
+            <label for="color">Event Color:</label>
+            <input type="color" id="color" name="color" value="#007BFF"><br><br>
         </form>
       </div>
       <div class="modal-footer">
@@ -43,6 +46,12 @@
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             events: '/api/events',  // Fetch events dynamically from the endpoint we created
+            eventDisplay: 'block',  // This will make single-day events display as blocks
+            eventTimeFormat: { // new configuration
+            hour: 'numeric',
+            minute: '2-digit',
+            meridiem: 'short'
+            },
             dateClick: function(info) {
                 // Display the modal when a date is clicked
                 $('#eventModal').modal('show');

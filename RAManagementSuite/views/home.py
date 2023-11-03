@@ -65,7 +65,8 @@ def events():
         start_date = request.form.get('start_date')
         end_date = request.form.get('end_date')
         owner_id = current_user.id
-        create_event(title, start_date, end_date, owner_id)
+        color = request.form.get('color')
+        create_event(title, start_date, end_date, owner_id, color)
         return redirect(url_for('home.events'))
 
     events = get_all_events()
@@ -77,9 +78,10 @@ def get_events():
     # Fetch events from your database
     events = Event.query.all()
     events_data = [{
-        'title': f"{event.title} (Hosted by: {event.owner.name})",  # Combine event title with owner's name
+        'title': event.title,  # Combine event title with owner's name
         'start': event.start_date.isoformat(),
         'end': event.end_date.isoformat(),
+        'color': event.color,
         'url': url_for('home.events')  # Pointing back to the main calendar
     } for event in events]
 
