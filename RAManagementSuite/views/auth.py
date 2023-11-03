@@ -49,4 +49,4 @@ def signup():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('home.index'))
+    return render_template('home/logout.html')

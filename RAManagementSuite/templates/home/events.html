@@ -3,20 +3,33 @@
 {% block title %}Events{% endblock %}
 
 {% block content %}
-<!-- Event creation form -->
-<form method="post" action="{{ url_for('home.events') }}">
-    <label for="title">Event Title:</label>
-    <input type="text" id="title" name="title" required><br><br>
-
-    <label for="start_date">Start Date:</label>
-    <input type="datetime-local" id="start_date" name="start_date" required><br><br>
-
-    <label for="end_date">End Date:</label>
-    <input type="datetime-local" id="end_date" name="end_date" required><br><br>
-
-    <input type="submit" value="Add Event">
-</form>
-<br>
+<!-- Event creation modal -->
+<div class="modal" tabindex="-1" role="dialog" id="eventModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Event</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{{ url_for('home.events') }}" id="eventForm">
+            <label for="title">Event Title:</label>
+            <input type="text" id="title" name="title" required><br><br>
+            <label for="start_date">Start Date:</label>
+            <input type="datetime-local" id="start_date" name="start_date" required><br><br>
+            <label for="end_date">End Date:</label>
+            <input type="datetime-local" id="end_date" name="end_date" required><br><br>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('eventForm').submit();">Add Event</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Adding FullCalendar's CSS and JS -->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
@@ -29,7 +42,13 @@
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            events: '/api/events'  // Fetch events dynamically from the endpoint we created
+            events: '/api/events',  // Fetch events dynamically from the endpoint we created
+            dateClick: function(info) {
+                // Display the modal when a date is clicked
+                $('#eventModal').modal('show');
+                // Pre-fill the start date with the clicked date
+                document.getElementById('start_date').value = info.dateStr + "T00:00";
+            }
         });
         calendar.render();
     });
