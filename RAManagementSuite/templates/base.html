@@ -5,13 +5,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+      body {
+        font-family: 'Roboto', sans-serif;
+      }
+      .custom-nav {
+        background-color: #343a40;
+      }
+      .custom-nav .nav-link, .custom-nav .navbar-brand {
+        color: #FFFFFF;
+      }
+
+    </style>
 
     <title>{% block title %} {% endblock %}</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-md navbar-light bg-light">
+    <nav class="navbar navbar-expand-md custom-nav">
         <a class="navbar-brand" href="{{ url_for('home.index')}}">RA Management Suite</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -31,24 +47,23 @@
                 {% endif %}
             </ul>
 
-            <!-- Here we apply the ml-auto class to push the following items to the right -->
             <ul class="navbar-nav ml-auto">
                 {% if current_user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('auth.logout')}}">Logout</a>
+                    <a class="btn btn-primary" href="{{ url_for('auth.logout')}}">Logout</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('auth.login')}}">Login</a>
+                    <a class="nav-link btn btn-primary" href="{{ url_for('auth.login')}}">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('auth.signup')}}">Sign Up</a>
+                    <a class="nav-link btn btn-primary ml-2" href="{{ url_for('auth.signup')}}">Sign Up</a>
                 </li>
                 {% endif %}
             </ul>
         </div>
     </nav>
-    <div class="container">
+    <div class="container pt-5">
         {% block content %} {% endblock %}
     </div>
 
