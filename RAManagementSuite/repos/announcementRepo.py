@@ -1,4 +1,3 @@
-# announcementRepo.py
 from RAManagementSuite.models import Announcement
 from RAManagementSuite.extensions import db
 from werkzeug.exceptions import abort

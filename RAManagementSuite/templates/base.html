@@ -10,24 +10,18 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
     <style>
-      body {
-        font-family: 'Roboto', sans-serif;
-      }
-      .custom-nav {
-        background-color: #343a40;
-      }
-      .custom-nav .nav-link, .custom-nav .navbar-brand {
-        color: #FFFFFF;
-      }
-
+        .custom-btn {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
     </style>
+
 
     <title>{% block title %} {% endblock %}</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-md custom-nav">
+    <nav class="navbar navbar-dark bg-dark navbar-expand-md ">
         <a class="navbar-brand" href="{{ url_for('home.index')}}">RA Management Suite</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -50,14 +44,14 @@
             <ul class="navbar-nav ml-auto">
                 {% if current_user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="btn btn-primary" href="{{ url_for('auth.logout')}}">Logout</a>
+                    <a class="btn btn-primary custom-btn" href="{{ url_for('auth.logout')}}">Logout</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link btn btn-primary" href="{{ url_for('auth.login')}}">Login</a>
+                    <a class="btn btn-primary custom-btn" href="{{ url_for('auth.login')}}">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link btn btn-primary ml-2" href="{{ url_for('auth.signup')}}">Sign Up</a>
+                    <a class="btn btn-primary custom-btn ml-2" href="{{ url_for('auth.signup')}}">Sign Up</a>
                 </li>
                 {% endif %}
             </ul>
