@@ -3,6 +3,9 @@
 {% block title %}Events{% endblock %}
 
 {% block content %}
+<!-- Adding FullCalendar's CSS and JS -->
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.css' />
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
 
 <!-- Event creation modal -->
 <div class="modal" tabindex="-1" role="dialog" id="eventModal">
@@ -18,10 +21,16 @@
         <form method="post" action="{{ url_for('home.events') }}" id="eventForm">
             <label for="title">Event Title:</label>
             <input type="text" id="title" name="title" required><br><br>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description"></textarea><br><br>
+
             <label for="start_date">Start Date:</label>
             <input type="datetime-local" id="start_date" name="start_date" required><br><br>
+
             <label for="end_date">End Date:</label>
             <input type="datetime-local" id="end_date" name="end_date" required><br><br>
+
             <label for="color">Event Color:</label>
             <input type="color" id="color" name="color" value="#007BFF"><br><br>
         </form>
@@ -34,32 +43,104 @@
   </div>
 </div>
 
-<!-- Adding FullCalendar's CSS and JS -->
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
+<!-- Event edit/view modal -->
+<div class="modal" tabindex="-1" role="dialog" id="editEventModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">View Event</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{{ url_for('home.events') }}" id="editEventForm">
+            <input type="hidden" id="editEventId" name="event_id">
+
+            <label for="editEventTitle">Event Title:</label>
+            <input type="text" id="editEventTitle" name="title" required readonly><br><br>
+
+            <label for="editDescription">Description:</label>
+            <textarea id="editDescription" name="description" readonly></textarea><br><br>
+
+            <label for="start_date">Start Date:</label>
+            <input type="datetime-local" id="editEventStartDate" name="start_date" required readonly><br><br>
+
+            <label for="end_date">End Date:</label>
+            <input type="datetime-local" id="editEventEndDate" name="end_date" required readonly><br><br>
+
+            <label for="editColor">Event Color:</label>
+            <input type="color" id="editColor" name="color" readonly><br><br>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="saveChangesButton"  onclick="document.getElementById('editEventForm').submit();">Save Changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Your calendar container -->
 <div id='calendar'></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        let currentUserId = {{ current_user.id }};
+
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             events: '/api/events',  // Fetch events dynamically from the endpoint we created
-            eventDisplay: 'block',  // This will make single-day events display as blocks
-            eventTimeFormat: { // new configuration
-            hour: 'numeric',
-            minute: '2-digit',
-            meridiem: 'short'
+            eventDisplay: 'block',
+            eventTimeFormat: {
+                hour: 'numeric',
+                minute: '2-digit',
+                meridiem: 'short'
             },
             dateClick: function(info) {
-                // Display the modal when a date is clicked
                 $('#eventModal').modal('show');
-                // Pre-fill the start date with the clicked date
                 document.getElementById('start_date').value = info.dateStr + "T00:00";
+            },
+
+            eventClick: function(info) {
+                const isOwner = {{ current_user.id }} === info.event.extendedProps.ownerId;
+
+                // Calculate timezone offset in minutes
+                const timezoneOffsetMinutes = new Date().getTimezoneOffset();
+
+                // Adjust the start time and end time for the timezone offset
+                const adjustedStartTime = new Date(info.event.start.getTime() - timezoneOffsetMinutes * 60000);
+                const adjustedEndTime = info.event.end ? new Date(info.event.end.getTime() - timezoneOffsetMinutes * 60000) : null;
+
+                // Populate modal fields
+                document.getElementById('editEventTitle').value = info.event.title;
+                document.getElementById('editDescription').value = info.event.extendedProps.description;
+                document.getElementById('editEventStartDate').value = adjustedStartTime.toISOString().slice(0, 19).slice(0, 16);
+                document.getElementById('editEventEndDate').value = adjustedEndTime ? adjustedEndTime.toISOString().slice(0, 19).slice(0, 16) : '';
+                document.getElementById('editColor').value = info.event.backgroundColor;
+
+
+                if (isOwner) {
+                    // If the user is the owner, make the fields editable and show the Save Changes button
+                    document.getElementById('editEventTitle').removeAttribute('readonly');
+                    document.getElementById('editDescription').removeAttribute('readonly');
+                    document.getElementById('editEventStartDate').removeAttribute('readonly');
+                    document.getElementById('editEventEndDate').removeAttribute('readonly');
+                    document.getElementById('editColor').removeAttribute('readonly');
+                    document.getElementById('saveChangesButton').style.display = 'block';
+                    document.getElementById('editEventId').value = info.event.id;
+                } else {
+                    // Otherwise, make the fields readonly and hide the Save Changes button
+                    document.getElementById('saveChangesButton').style.display = 'none';
+                }
+                // Show the modal
+                $('#editEventModal').modal('show');
             }
+
         });
         calendar.render();
+
     });
 </script>
 {% endblock %}

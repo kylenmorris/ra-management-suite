@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 
 from RAManagementSuite.models import Event
 from RAManagementSuite.repos import announcementRepo
-from RAManagementSuite.repos.eventRepo import create_event, get_all_events
+from RAManagementSuite.repos.eventRepo import create_event, get_all_events, update_event
 
 home = Blueprint('home', __name__)
 
@@ -60,17 +60,24 @@ def profile():
 @login_required
 def events():
     if request.method == 'POST':
-        # get data from form and create an event
+        # get data from form and create or update an event
         title = request.form.get('title')
         start_date = request.form.get('start_date')
         end_date = request.form.get('end_date')
         owner_id = current_user.id
         color = request.form.get('color')
-        create_event(title, start_date, end_date, owner_id, color)
+        description = request.form.get('description')
+        event_id = request.form.get('event_id')
+
+        if event_id and event_id.strip() != '':  # If event_id is provided, it's an update
+            update_event(event_id, title, start_date, end_date, color, description)
+        else:  # Otherwise, it's a new event
+            create_event(title, start_date, end_date, owner_id, color, description)
         return redirect(url_for('home.events'))
 
     events = get_all_events()
-    return render_template('home/events.html', events=events)
+    return render_template('home/events.html', events=events, current_user=current_user)
+
 
 @login_required
 @home.route('/api/events', methods=['GET'])
@@ -78,11 +85,14 @@ def get_events():
     # Fetch events from your database
     events = Event.query.all()
     events_data = [{
+        'id': event.id,
         'title': event.title,  # Combine event title with owner's name
         'start': event.start_date.isoformat(),
         'end': event.end_date.isoformat(),
         'color': event.color,
-        'url': url_for('home.events')  # Pointing back to the main calendar
+        'description': event.description,
+        # 'url': url_for('home.events'),  # Pointing back to the main calendar
+        'ownerId': event.owner_id
     } for event in events]
 
     return jsonify(events_data)
