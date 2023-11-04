@@ -74,8 +74,9 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="saveChangesButton"  onclick="document.getElementById('editEventForm').submit();">Save Changes</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" id="deleteEventButton" >Delete</button>
+          <button type="button" class="btn btn-primary ml-auto" id="saveChangesButton"  onclick="document.getElementById('editEventForm').submit();">Save Changes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -117,8 +118,6 @@
             eventClick: function(info) {
                 const isOwner = {{ current_user.id }} === info.event.extendedProps.ownerId;
 
-
-
                 const startTime = new Date(info.event.start);
                 const endTime = info.event.end ? new Date(info.event.end) : null;
 
@@ -138,10 +137,12 @@
                     document.getElementById('editEventEndDate').removeAttribute('readonly');
                     document.getElementById('editColor').removeAttribute('readonly');
                     document.getElementById('saveChangesButton').style.display = 'block';
+                    document.getElementById('deleteEventButton').style.display = 'block';
                     document.getElementById('editEventId').value = info.event.id;
                 } else {
                     // Otherwise, make the fields readonly and hide the Save Changes button
                     document.getElementById('saveChangesButton').style.display = 'none';
+                    document.getElementById('deleteEventButton').style.display = 'none';
                 }
                 // Show the modal
                 $('#editEventModal').modal('show');
@@ -175,6 +176,29 @@
         });
         document.getElementById('editEventEndDate').addEventListener('change', function() {
             validateEventDates('editEventStartDate', 'editEventEndDate');
+        });
+
+        // even deletion listener
+        document.getElementById('deleteEventButton').addEventListener('click', function() {
+            const eventId = document.getElementById('editEventId').value;
+            if (eventId && confirm('Are you sure you want to delete this event?')) {
+                fetch(`/delete-event/${eventId}`, {
+                    method: 'POST',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        $('#editEventModal').modal('hide');
+                        calendar.refetchEvents(); // to refresh the events after deletion
+                        alert('Event deleted successfully!');
+                    } else {
+                        alert(data.message || 'Failed to delete the event.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
         });
     });
 </script>

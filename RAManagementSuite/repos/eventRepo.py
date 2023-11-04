@@ -38,4 +38,12 @@ def update_event(event_id, title, start_date, end_date, color, description):
         db.session.commit()
     else:
         raise ValueError("Event not found")
-# ... Add more methods as required ...
+
+
+def delete_event(event_id):
+    event = get_event_by_id(event_id)
+    if event:
+        db.session.delete(event)
+        db.session.commit()
+    else:
+        raise ValueError("Event not found")

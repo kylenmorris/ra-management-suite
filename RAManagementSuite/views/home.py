@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 
 from RAManagementSuite.models import Event
 from RAManagementSuite.repos import announcementRepo
-from RAManagementSuite.repos.eventRepo import create_event, get_all_events, update_event
+from RAManagementSuite.repos.eventRepo import create_event, get_all_events, update_event, delete_event
 
 home = Blueprint('home', __name__)
 
@@ -96,3 +96,13 @@ def get_events():
     } for event in events]
 
     return jsonify(events_data)
+
+
+@home.route('/delete-event/<int:event_id>', methods=['POST'])
+@login_required
+def delete_event_route(event_id):
+    event = Event.query.get(event_id)
+    if event and event.owner_id == current_user.id:  # ensure the current user is the owner
+        delete_event(event_id)
+        return jsonify(success=True)
+    return jsonify(success=False, message="Event not found or you don't have the permission to delete it")
