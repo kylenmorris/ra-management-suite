@@ -100,7 +100,8 @@
             },
             dateClick: function(info) {
                 $('#eventModal').modal('show');
-                document.getElementById('start_date').value = info.dateStr + "T00:00";
+                document.getElementById('start_date').value = info.dateStr + "T12:00";  // Set to noon
+                document.getElementById('end_date').value = info.dateStr + "T13:00";
             },
 
             eventClick: function(info) {
@@ -141,6 +142,33 @@
         });
         calendar.render();
 
+        //event listeners for date validation
+        document.getElementById('start_date').addEventListener('change', validateDates);
+        document.getElementById('end_date').addEventListener('change', validateDates);
+
+        function validateDates() {
+            const startDate = new Date(document.getElementById('start_date').value);
+            const endDate = new Date(document.getElementById('end_date').value);
+
+            if (endDate < startDate) {
+                alert('End date cannot be before start date!');
+                document.getElementById('end_date').value = document.getElementById('start_date').value; // reset end date to start date
+            }
+        }
+
+        // validation for edit event modal
+        document.getElementById('editEventStartDate').addEventListener('change', validateEditDates);
+        document.getElementById('editEventEndDate').addEventListener('change', validateEditDates);
+
+        function validateEditDates() {
+            const startDate = new Date(document.getElementById('editEventStartDate').value);
+            const endDate = new Date(document.getElementById('editEventEndDate').value);
+
+            if (endDate < startDate) {
+                alert('End date cannot be before start date!');
+                document.getElementById('editEventEndDate').value = document.getElementById('editEventStartDate').value; // reset end date to start date
+            }
+        }
     });
 </script>
 {% endblock %}
