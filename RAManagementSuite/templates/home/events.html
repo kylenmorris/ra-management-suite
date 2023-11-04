@@ -85,11 +85,21 @@
 <div id='calendar'></div>
 
 <script>
+    // we have to do this shit cause the .toISOString() method converts a date to a string using
+    // the UTC timezone, not the local timezone i.e. it ignores out timezone and does UTC
+    // Extract hours, minutes, and seconds from the Date object
+    function formatToLocalISOString(date) {
+        const tzoffset = date.getTimezoneOffset() * 60000;
+        const localISOTime = new Date(date - tzoffset).toISOString().slice(0, -1);
+        return localISOTime;
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         let currentUserId = {{ current_user.id }};
 
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
+            timeZone: 'local',
             initialView: 'dayGridMonth',
             events: '/api/events',  // Fetch events dynamically from the endpoint we created
             eventDisplay: 'block',
@@ -107,18 +117,16 @@
             eventClick: function(info) {
                 const isOwner = {{ current_user.id }} === info.event.extendedProps.ownerId;
 
-                // Calculate timezone offset in minutes
-                const timezoneOffsetMinutes = new Date().getTimezoneOffset();
 
-                // Adjust the start time and end time for the timezone offset
-                const adjustedStartTime = new Date(info.event.start.getTime() - timezoneOffsetMinutes * 60000);
-                const adjustedEndTime = info.event.end ? new Date(info.event.end.getTime() - timezoneOffsetMinutes * 60000) : null;
+
+                const startTime = new Date(info.event.start);
+                const endTime = info.event.end ? new Date(info.event.end) : null;
 
                 // Populate modal fields
                 document.getElementById('editEventTitle').value = info.event.title;
                 document.getElementById('editDescription').value = info.event.extendedProps.description;
-                document.getElementById('editEventStartDate').value = adjustedStartTime.toISOString().slice(0, 19).slice(0, 16);
-                document.getElementById('editEventEndDate').value = adjustedEndTime ? adjustedEndTime.toISOString().slice(0, 19).slice(0, 16) : '';
+                document.getElementById('editEventStartDate').value = formatToLocalISOString(startTime).slice(0, 16);
+                document.getElementById('editEventEndDate').value = endTime ? formatToLocalISOString(endTime).slice(0, 16) : '';
                 document.getElementById('editColor').value = info.event.backgroundColor;
 
 
@@ -142,33 +150,32 @@
         });
         calendar.render();
 
-        //event listeners for date validation
-        document.getElementById('start_date').addEventListener('change', validateDates);
-        document.getElementById('end_date').addEventListener('change', validateDates);
+        function validateEventDates(startInputId, endInputId) {
+            const startDate = new Date(document.getElementById(startInputId).value);
+            let endDate = new Date(document.getElementById(endInputId).value);
 
-        function validateDates() {
-            const startDate = new Date(document.getElementById('start_date').value);
-            const endDate = new Date(document.getElementById('end_date').value);
-
-            if (endDate < startDate) {
+            if (endDate <= startDate) {
                 alert('End date cannot be before start date!');
-                document.getElementById('end_date').value = document.getElementById('start_date').value; // reset end date to start date
+                endDate = new Date(startDate.getTime() + 3600000); // add 1 hour (3600000 milliseconds)
+                document.getElementById(endInputId).value = formatToLocalISOString(endDate).slice(0, 16);
             }
         }
+
+        // event listeners for date validation
+        document.getElementById('start_date').addEventListener('change', function() {
+            validateEventDates('start_date', 'end_date');
+        });
+        document.getElementById('end_date').addEventListener('change', function() {
+            validateEventDates('start_date', 'end_date');
+        });
 
         // validation for edit event modal
-        document.getElementById('editEventStartDate').addEventListener('change', validateEditDates);
-        document.getElementById('editEventEndDate').addEventListener('change', validateEditDates);
-
-        function validateEditDates() {
-            const startDate = new Date(document.getElementById('editEventStartDate').value);
-            const endDate = new Date(document.getElementById('editEventEndDate').value);
-
-            if (endDate < startDate) {
-                alert('End date cannot be before start date!');
-                document.getElementById('editEventEndDate').value = document.getElementById('editEventStartDate').value; // reset end date to start date
-            }
-        }
+        document.getElementById('editEventStartDate').addEventListener('change', function() {
+            validateEventDates('editEventStartDate', 'editEventEndDate');
+        });
+        document.getElementById('editEventEndDate').addEventListener('change', function() {
+            validateEventDates('editEventStartDate', 'editEventEndDate');
+        });
     });
 </script>
 {% endblock %}
