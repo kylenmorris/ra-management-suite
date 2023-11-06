@@ -2,11 +2,12 @@ import os
 from flask import Flask
 from flask_login import LoginManager
 
-from RAManagementSuite import models
-from .extensions import db, migrate
-from .models import Announcement
+from extensions import db, migrate
+from models import Announcement
 
-# from .models import User
+from models import User
+from views.auth import auth
+from views.home import home
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DB_PATH = os.path.join(BASE_DIR, "database.db")
@@ -28,16 +29,13 @@ def create_app():
     app = Flask(__name__)
 
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + DB_PATH
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/server_db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + DB_PATH
+    #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/server_db'
 
     db.init_app(app)
     migrate.init_app(app, db)  # for quickly changing the db
 
-    from RAManagementSuite.views.auth import auth
     app.register_blueprint(auth)
-
-    from RAManagementSuite.views.home import home
     app.register_blueprint(home)
 
     with app.app_context():
@@ -48,7 +46,6 @@ def create_app():
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
 
-    from RAManagementSuite.models import User
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))

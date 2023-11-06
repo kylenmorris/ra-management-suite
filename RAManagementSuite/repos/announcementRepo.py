@@ -1,5 +1,5 @@
-from RAManagementSuite.models import Announcement
-from RAManagementSuite.extensions import db
+from models import Announcement
+from extensions import db
 from werkzeug.exceptions import abort
 
 

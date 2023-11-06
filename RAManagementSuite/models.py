@@ -1,4 +1,4 @@
-from .extensions import db
+from extensions import db
 from enum import Enum
 from datetime import datetime
 from flask_login import UserMixin

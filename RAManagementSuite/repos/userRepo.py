@@ -1,5 +1,5 @@
-from RAManagementSuite.models import User
-from RAManagementSuite.extensions import db
+from models import User
+from extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.exceptions import abort
 

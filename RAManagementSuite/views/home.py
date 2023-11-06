@@ -1,9 +1,9 @@
 from flask import Flask, Blueprint, render_template, request, url_for, flash, redirect, jsonify
 from flask_login import login_required, current_user
 
-from RAManagementSuite.models import Event
-from RAManagementSuite.repos import announcementRepo
-from RAManagementSuite.repos.eventRepo import create_event, get_all_events, update_event, delete_event
+from models import Event
+from repos import announcementRepo
+from repos.eventRepo import create_event, get_all_events, update_event, delete_event
 
 home = Blueprint('home', __name__)
 
