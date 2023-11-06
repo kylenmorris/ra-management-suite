@@ -17,8 +17,8 @@ def initialize_database():
     # Check if the table is empty
     if not Announcement.query.first():
         initial_announcements = [
-            Announcement(title='First Announcement', content='Content for the first announcement'),
-            Announcement(title='Second Announcement', content='Content for the second announcement')
+            Announcement(title='First Announcement', content='Content for the first announcement.html'),
+            Announcement(title='Second Announcement', content='Content for the second announcement.html')
         ]
         for ann in initial_announcements:
             db.session.add(ann)
