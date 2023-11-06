@@ -36,7 +36,7 @@ def create():
             flash('Title is required!')
         else:
             announcementRepo.create_announcement(title, content)
-            return redirect(url_for('home.index'))
+            return redirect(url_for('home.announcement_page'))
 
     return render_template('home/create.html', current_page=current_page)
 
@@ -52,10 +52,14 @@ def edit(announcement_id):
             flash('Title is required!')
         else:
             announcementRepo.edit_announcement(title, content, announcement_id)
-            return redirect(url_for('home.index'))
+            return redirect(url_for('home.announcement_page'))
 
     return render_template('home/edit.html', announcement=announcement)
 
+@home.route('/delete/<int:announcement_id>/')
+def delete_announcement(announcement_id):
+    announcementRepo.del_announcement(announcement_id)
+    return redirect(url_for('home.announcement_page'))
 
 @home.route('/profile')
 @login_required

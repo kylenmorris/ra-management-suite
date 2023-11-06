@@ -1,14 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>{% block title %} Announcement {% endblock %}</h1>
+<div class="d-flex align-items-center">
+    <h1 style="margin-right: 20px;">{% block title %} Announcements {% endblock %}</h1>
+    <a href="{{ url_for('home.create') }}" class="btn btn-outline-primary">New</a>
+</div>
+
+
     {% for announcement in announcements %}
         <a href="{{ url_for('home.announcement', announcement_id=announcement['id']) }}">
             <h2>{{ announcement['title'] }}</h2>
         </a>
-        <span class="badge badge-primary">{{ announcement['created'] }}</span>
+        <span class="badge badge-primary">{{ announcement['created']}}</span>
             <a href="{{ url_for('home.edit', announcement_id=announcement['id']) }}">
             <span class="badge badge-warning">Edit</span>
+        </a>
+            <a href="{{ url_for('home.delete_announcement', announcement_id=announcement['id']) }}">
+            <span class="badge badge-warning">Delete</span>
         </a>
         <hr>
     {% endfor %}
