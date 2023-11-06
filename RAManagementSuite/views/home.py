@@ -10,9 +10,15 @@ home = Blueprint('home', __name__)
 
 @home.route('/')
 def index():
+    current_page = 'home'
     announcements = announcementRepo.get_announcements()
-    return render_template('home/index.html', announcements=announcements)
+    return render_template('home/index.html', announcements=announcements, current_page=current_page)
 
+@home.route('/announcement')
+def announcement_page():
+    current_page = 'announcement_page'
+    announcements = announcementRepo.get_announcements()
+    return render_template('home/announcement.html', announcements=announcements, current_page=current_page)
 
 @home.route('/view/<int:announcement_id>')
 def announcement(announcement_id):
@@ -22,6 +28,7 @@ def announcement(announcement_id):
 
 @home.route('/create', methods=('GET', 'POST'))
 def create():
+    current_page = 'new_announcement'
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
@@ -29,9 +36,9 @@ def create():
             flash('Title is required!')
         else:
             announcementRepo.create_announcement(title, content)
-            return redirect(url_for('home.index'))
+            return redirect(url_for('home.announcement_page'))
 
-    return render_template('home/create.html')
+    return render_template('home/create.html', current_page=current_page)
 
 
 @home.route('/edit/<int:announcement_id>/', methods=('GET', 'POST'))
@@ -45,20 +52,26 @@ def edit(announcement_id):
             flash('Title is required!')
         else:
             announcementRepo.edit_announcement(title, content, announcement_id)
-            return redirect(url_for('home.index'))
+            return redirect(url_for('home.announcement_page'))
 
     return render_template('home/edit.html', announcement=announcement)
 
+@home.route('/delete/<int:announcement_id>/')
+def delete_announcement(announcement_id):
+    announcementRepo.del_announcement(announcement_id)
+    return redirect(url_for('home.announcement_page'))
 
 @home.route('/profile')
 @login_required
 def profile():
-    return render_template('home/profile.html', name=current_user.name)
+    current_page = 'Profile'
+    return render_template('home/profile.html', name=current_user.name, current_page=current_page)
 
 
 @home.route('/events', methods=['GET', 'POST'])
 @login_required
 def events():
+    current_page = 'Calendar'
     if request.method == 'POST':
         # get data from form and create or update an event
         title = request.form.get('title')
@@ -76,7 +89,7 @@ def events():
         return redirect(url_for('home.events'))
 
     events = get_all_events()
-    return render_template('home/events.html', events=events, current_user=current_user)
+    return render_template('home/events.html', events=events, current_user=current_user, current_page=current_page)
 
 
 @login_required
