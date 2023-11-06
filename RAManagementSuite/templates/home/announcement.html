@@ -6,7 +6,7 @@
     <a href="{{ url_for('home.create') }}" class="btn btn-outline-primary">New</a>
 </div>
 
-{% for announcement in announcements %}
+{% for announcement in announcements|reverse %}
     <a href="{{ url_for('home.announcement', announcement_id=announcement['id']) }}">
         <h2>{{ announcement['title'] }}</h2>
     </a>
