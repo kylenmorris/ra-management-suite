@@ -1,9 +1,10 @@
 from flask import Flask, Blueprint, render_template, request, url_for, flash, redirect, jsonify
 from flask_login import login_required, current_user
 
-from RAManagementSuite.models import Event
-from RAManagementSuite.repos import announcementRepo
+from RAManagementSuite.models import Event, UserRole, TaskPriority, User, TaskStatus
+from RAManagementSuite.repos import announcementRepo, taskRepo
 from RAManagementSuite.repos.eventRepo import create_event, get_all_events, update_event, delete_event
+#from RAManagementSuite.repos.taskRepo import create_task, get_all_tasks, get_task_by_id, update_task
 
 home = Blueprint('home', __name__)
 
@@ -106,3 +107,86 @@ def delete_event_route(event_id):
         delete_event(event_id)
         return jsonify(success=True)
     return jsonify(success=False, message="Event not found or you don't have the permission to delete it")
+
+
+@home.route('/tasks/create', methods=['GET', 'POST'])
+@login_required
+def create_task_route():
+    # Check if the user has permission to create tasks
+    if current_user.role == UserRole.BASIC:
+        flash('You do not have permission to create tasks.')
+        return redirect(url_for('home.index'))
+
+    if request.method == 'POST':
+        title = request.form.get('title')
+        description = request.form.get('description')
+        deadline = request.form.get('deadline')
+        priority = request.form.get('priority')
+        assigned_user_ids = request.form.getlist('assigned_users')
+
+        taskRepo.create_task(title, description, deadline, TaskPriority[priority.upper()],
+                             current_user.id, assigned_user_ids)
+        flash('Task created successfully!')
+        return redirect(url_for('home.tasks'))
+
+    users = User.query.all()
+    return render_template('home/create_task.html', users=users)
+
+
+@home.route('/tasks', methods=['GET'])
+@login_required
+def tasks():
+    if current_user.role == UserRole.BASIC:
+        # If the user is basic, show only tasks assigned to them
+        tasks = taskRepo.get_tasks_by_user(current_user.id)
+    else:
+        # If the user has higher privileges, show all tasks
+        tasks = taskRepo.get_all_tasks()
+
+    return render_template('home/tasks.html', tasks=tasks)
+
+
+@home.route('/tasks/edit/<int:task_id>/', methods=['GET', 'POST'])
+@login_required
+def edit_task_route(task_id):
+    # Check if the user has permission to edit tasks
+    if current_user.role == UserRole.BASIC:
+        flash('You do not have permission to edit tasks.')
+        return redirect(url_for('home.tasks'))
+
+    task = taskRepo.get_task_by_id(task_id)
+
+    if request.method == 'POST':
+        title = request.form.get('title')
+        description = request.form.get('description')
+        deadline = request.form.get('deadline')
+        priority = request.form.get('priority')
+        status = request.form.get('status')
+        assigned_user_ids = request.form.getlist('assigned_users')
+
+        taskRepo.update_task(task_id, title, description, deadline, TaskPriority[priority.upper()],
+                             TaskStatus[status.upper()], assigned_user_ids)
+        flash('Task updated successfully!')
+        return redirect(url_for('home.tasks'))
+
+    users = User.query.all()
+    return render_template('home/edit_task.html', task=task, users=users)
+
+
+@home.route('/tasks/delete/<int:task_id>', methods=['POST'])
+@login_required
+def delete_task_route(task_id):
+    # Check if the user has permission to delete tasks
+    if current_user.role == UserRole.BASIC:
+        flash('You do not have permission to delete tasks.')
+        return redirect(url_for('home.tasks'))
+
+    try:
+        taskRepo.delete_task(task_id)
+        flash('Task deleted successfully.')
+    except ValueError as e:
+        flash(str(e))
+    return redirect(url_for('home.tasks'))
+
+
+
