@@ -35,3 +35,21 @@ class Event(db.Model):
     owner = db.relationship('User', backref=db.backref('events', lazy=True))
     color = db.Column(db.String(7), default="#007BFF")
     description = db.Column(db.Text, nullable=True)
+
+
+# class UserProfile(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     first_name = db.Column(db.String(50))
+#     last_name = db.Column(db.String(50))
+#     birthdate = db.Column(db.Date)
+#     phone_number = db.Column(db.String(20))
+#     pronouns = db.Column(db.String(20))
+#     gender = db.Column(db.String(20))
+#     major = db.Column(db.String(50))
+#     address_line1 = db.Column(db.String(100))
+#     address_line2 = db.Column(db.String(100))
+#     postalcode = db.Column(db.String(10))
+#     city = db.Column(db.String(50))
+#     province = db.Column(db.String(50))
+#     shift_availability = db.Column(db.String(100))
+#     user = db.relationship('User', back_populates='profile')
