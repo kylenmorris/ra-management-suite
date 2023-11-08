@@ -61,7 +61,9 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Tasks</h2>
+    {% if current_user.role != UserRole.BASIC %}
     <a href="{{ url_for('home.create_task_route') }}" class="btn btn-success">Create New Task</a>
+    {% endif %}
 </div>
 <table class="table">
     <thead>
@@ -75,7 +77,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for task in tasks %}
+        {% for task in tasks  %}
         <tr>
             <td>{{ task.title }}</td>
             <td>{{ task.description|truncate(40, true, '...') }}</td>
