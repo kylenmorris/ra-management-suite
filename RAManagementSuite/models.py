@@ -13,14 +13,14 @@ class UserRole(Enum):
 
 class TaskPriority(Enum):
     LOW = "green"
-    MEDIUM = "yellow"
+    MEDIUM = "blue"
     HIGH = "red"
 
 
 class TaskStatus(Enum):
-    COMPLETED = "completed"
-    IN_PROGRESS = "in progress"
-    NOT_STARTED = "not started"
+    COMPLETED = "Completed"
+    IN_PROGRESS = "In Progress"
+    NOT_STARTED = "Not Started"
 
 
 # Association table for the many-to-many relationship between Tasks and Users

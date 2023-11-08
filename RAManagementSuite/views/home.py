@@ -1,10 +1,14 @@
+import os
+from datetime import datetime
+
 from flask import Flask, Blueprint, render_template, request, url_for, flash, redirect, jsonify
 from flask_login import login_required, current_user
 
 from RAManagementSuite.models import Event, UserRole, TaskPriority, User, TaskStatus
 from RAManagementSuite.repos import announcementRepo, taskRepo
 from RAManagementSuite.repos.eventRepo import create_event, get_all_events, update_event, delete_event
-#from RAManagementSuite.repos.taskRepo import create_task, get_all_tasks, get_task_by_id, update_task
+
+# from RAManagementSuite.repos.taskRepo import create_task, get_all_tasks, get_task_by_id, update_task
 
 home = Blueprint('home', __name__)
 
@@ -143,7 +147,7 @@ def tasks():
         # If the user has higher privileges, show all tasks
         tasks = taskRepo.get_all_tasks()
 
-    return render_template('home/tasks.html', tasks=tasks)
+    return render_template('home/tasks.html', tasks=tasks, UserRole=UserRole)
 
 
 @home.route('/tasks/edit/<int:task_id>/', methods=['GET', 'POST'])
@@ -189,4 +193,36 @@ def delete_task_route(task_id):
     return redirect(url_for('home.tasks'))
 
 
+@home.route('/tasks/update_status/<int:task_id>', methods=['POST'])
+@login_required
+def update_task_status_route(task_id):
+    if current_user.role != UserRole.BASIC:
+        flash('You do not have permission to perform this action.')
+        return redirect(url_for('home.tasks'))
 
+    new_status = request.form.get('status')
+
+    try:
+        task = taskRepo.get_task_by_id(task_id)
+        if task:
+            taskRepo.update_task_status(task_id, TaskStatus[new_status.upper()])
+            flash('Task status updated successfully.')
+    except ValueError as e:
+        flash(str(e))
+
+    return redirect(url_for('home.tasks'))
+
+
+@home.app_template_filter('formatdatetime')
+def format_datetime_filter(value, format="%a %b %-d, %-I%p"):
+    if value is None:
+        return ""
+    # Ensure that the value is a datetime object
+    if isinstance(value, str):
+        value = datetime.fromisoformat(value)
+
+    # Adjust the format string if you're using Windows, as it does not support '-' modifier
+    if os.name == 'nt':
+        format = format.replace('%-', '%#')
+
+    return value.strftime(format)

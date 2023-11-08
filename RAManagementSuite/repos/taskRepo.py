@@ -76,3 +76,12 @@ def delete_task(task_id):
         db.session.commit()
     else:
         raise ValueError("Task not found")
+
+
+def update_task_status(task_id, new_status):
+    task = get_task_by_id(task_id)
+    if task:
+        task.status = new_status
+        db.session.commit()
+    else:
+        raise ValueError("Task not found")
