@@ -35,9 +35,9 @@
                         <label class="labels">Phone Number</label>
                         <input type="text" class="form-control" placeholder="Enter Phone Number" value="" readonly>
                     </div>
-                    <div class= "col-md-4">
+                    <div class="col-md-4">
                         <label class="labels">Gender</label>
-                        <select class="form-control" readonly>
+                        <select class="form-control" id="genderSelect" readonly>
                             <option value="" selected disabled>Select Gender</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
@@ -45,6 +45,7 @@
                             <option value="prefer not to say">Prefer not to say</option>
                         </select>
                     </div>
+
                     <div class="col-md-4">
                         <label class="labels">Pronouns</label>
                         <select class="form-control" readonly>
@@ -100,10 +101,10 @@
     // Get a reference to the "Edit Profile" button
     const editProfileButton = document.getElementById("edit-profile-button");
 
-    // Get references to the input fields you want to make editable
-    const editableFields = document.querySelectorAll(".form-control[readonly]");
+    // Get references to the input and select fields you want to make editable
+    const editableFields = document.querySelectorAll(".form-control[readonly], .select[readonly]");
 
-    // Function to toggle the "readonly" attribute on input fields and change button text
+    // Function to toggle the "readonly" attribute on input and select fields and change button text
     function toggleEditable() {
         for (const field of editableFields) {
             field.readOnly = !field.readOnly;
@@ -116,5 +117,6 @@
     // Add a click event listener to the "Edit Profile" button
     editProfileButton.addEventListener("click", toggleEditable);
 </script>
+
 
 {% endblock %}

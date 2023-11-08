@@ -30,8 +30,15 @@ def login():
 def signup():
     if request.method == 'POST':
         email = request.form.get('email')
-        name = request.form.get('name')
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
         password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+
+        # Check if passwords match
+        if password != confirm_password:
+            flash('Passwords do not match')
+            return redirect(url_for('auth.signup'))
 
         user = userRepo.get_user_by_email(email)
 
@@ -39,11 +46,10 @@ def signup():
             flash('Email address already exists')
             return redirect(url_for('auth.signup'))
 
-        userRepo.create_user(email, name, password)
+        userRepo.create_user(email, f"{first_name} {last_name}", password)
         return redirect(url_for('auth.login'))
 
     return render_template('home/signup.html')
-
 
 @auth.route('/logout')
 @login_required

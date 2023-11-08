@@ -11,9 +11,9 @@ def get_user_by_email(email):
     return User.query.filter_by(email=email).first()
 
 
-def create_user(email, name, password):
+def create_user(first_name, last_name, email, password):
     hashed_password = generate_password_hash(password)
-    user = User(email=email, name=name, password=hashed_password)
+    user = User(first_name=first_name, last_name=last_name, email=email, password=hashed_password)
     db.session.add(user)
     db.session.commit()
 
