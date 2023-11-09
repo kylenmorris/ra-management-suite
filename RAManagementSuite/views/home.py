@@ -4,7 +4,7 @@ from datetime import datetime
 from flask import Flask, Blueprint, render_template, request, url_for, flash, redirect, jsonify
 from flask_login import login_required, current_user
 
-from RAManagementSuite.models import Event, UserRole, TaskPriority, User, TaskStatus
+from RAManagementSuite.models import Event, UserRole, TaskPriority, User, TaskStatus, EventType
 from RAManagementSuite.repos import announcementRepo, taskRepo
 from RAManagementSuite.repos.eventRepo import create_event, get_all_events, update_event, delete_event
 
@@ -69,34 +69,56 @@ def events():
         title = request.form.get('title')
         start_date = request.form.get('start_date')
         end_date = request.form.get('end_date')
-        owner_id = current_user.id
         color = request.form.get('color')
         description = request.form.get('description')
         event_id = request.form.get('event_id')
+        event_type = request.form.get(
+            'event_type') if current_user.role == UserRole.COORDINATOR else EventType.NORMAL
+        assigned_user_id = request.form.get('assigned_user_id') if current_user.role == UserRole.COORDINATOR else None
 
-        if event_id and event_id.strip() != '':  # If event_id is provided, it's an update
-            update_event(event_id, title, start_date, end_date, color, description)
-        else:  # Otherwise, it's a new event
-            create_event(title, start_date, end_date, owner_id, color, description)
+        if assigned_user_id == "None" or assigned_user_id == "":
+            assigned_user_id = None
+
+        if event_id and event_id.strip() != '':
+            update_event(event_id, title, start_date, end_date, color, description, event_type, assigned_user_id)
+        else:
+            create_event(title, start_date, end_date, current_user.id, color, description, event_type, assigned_user_id)
         return redirect(url_for('home.events'))
 
     events = get_all_events()
-    return render_template('home/events.html', events=events, current_user=current_user)
+    users = User.query.all()
+    # Filter events by type if a toggle is set, this should correspond to a filter in your frontend
+    filter_type = request.args.get('type')
+    if filter_type:
+        events = [event for event in events if event.event_type == filter_type]
+
+    return render_template('home/events.html', events=events, current_user=current_user, EventType=EventType, UserRole=UserRole, users=users)
 
 
-@login_required
 @home.route('/api/events', methods=['GET'])
+@login_required
 def get_events():
-    # Fetch events from your database
-    events = Event.query.all()
+    # Optionally handle a filter for event types
+    event_type_filter = request.args.get('event_type')
+
+    query = Event.query
+    if event_type_filter:
+        query = query.filter_by(event_type=event_type_filter)
+
+    events = query.all()
     events_data = [{
         'id': event.id,
-        'title': event.title,  # Combine event title with owner's name
+        'title': event.title,
         'start': event.start_date.isoformat(),
         'end': event.end_date.isoformat(),
         'color': event.color,
         'description': event.description,
-        # 'url': url_for('home.events'),  # Pointing back to the main calendar
+        'event_type': event.event_type.value,
+        'assigned_user_id': event.assigned_user_id,
+        'assigned_user': {
+            'id': event.assigned_user.id,
+            'name': event.assigned_user.name
+        } if event.assigned_user else None,  # Serialize the user here
         'ownerId': event.owner_id
     } for event in events]
 

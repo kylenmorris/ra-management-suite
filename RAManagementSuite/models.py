@@ -22,6 +22,10 @@ class TaskStatus(Enum):
     IN_PROGRESS = "In Progress"
     NOT_STARTED = "Not Started"
 
+class EventType(Enum):
+    NORMAL = "normal"
+    DUTY_SHIFT = "duty shift"
+
 
 # Association table for the many-to-many relationship between Tasks and Users
 task_assignments = db.Table('task_assignments',
@@ -51,9 +55,13 @@ class Event(db.Model):
     start_date = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.now)
     end_date = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.now)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    owner = db.relationship('User', backref=db.backref('events', lazy='dynamic'))
+    owner = db.relationship('User',foreign_keys=[owner_id], backref=db.backref('events', lazy='dynamic'))
     color = db.Column(db.String(7), default="#007BFF")
     description = db.Column(db.Text, nullable=True)
+    event_type = db.Column(db.Enum(EventType), default=EventType.NORMAL, nullable=False)
+    assigned_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    assigned_user = db.relationship('User', foreign_keys=[assigned_user_id],
+                                    backref=db.backref('duty_shifts', lazy='dynamic'))
 
 
 class Task(db.Model):
