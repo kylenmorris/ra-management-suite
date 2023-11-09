@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} User Management {% endblock %}</h1>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{user['name']}}</td>
+            <td>{{user['email']}}</td>
+            <td>{{user['role'].value}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

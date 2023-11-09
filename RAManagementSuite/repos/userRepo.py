@@ -1,4 +1,4 @@
-from models import User
+from models import User, UserRole
 from extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.exceptions import abort
@@ -15,3 +15,8 @@ def create_user(email, name, password):
     db.session.commit()
 
 # Additional user operations can go here...
+
+
+def get_all_users():
+    return User.query.all()
+
