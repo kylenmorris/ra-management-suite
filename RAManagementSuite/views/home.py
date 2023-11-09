@@ -121,12 +121,19 @@ def delete_event_route(event_id):
         return jsonify(success=True)
     return jsonify(success=False, message="Event not found or you don't have the permission to delete it")
 
+
+@home.route('/users', methods=['GET'])
 @login_required
-@home.route('/users', methods=['POST', 'GET'])
 def users_page():
     current_page = 'Users'
-    # if request.method == "POST":
-    #     request.form.get()
-
     all_users = userRepo.get_all_users()
-    return render_template('home/users.html', users=all_users, current_page=current_page)
+    all_roles = userRepo.get_roles_values()
+    return render_template('home/users.html', users=all_users, roles=all_roles, current_page=current_page)
+
+
+@home.route('/change-role/<int:user_id>', methods=['Post'])
+@login_required
+def change_role(user_id):
+    new_role = request.form.get('role')
+    userRepo.change_user_role(user_id, new_role)
+    return redirect(url_for('home.users_page'))

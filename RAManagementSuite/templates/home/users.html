@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1>{% block title %} User Management {% endblock %}</h1>
+
     <table>
         <tr>
             <th>Name</th>
@@ -12,7 +13,20 @@
         <tr>
             <td>{{user['name']}}</td>
             <td>{{user['email']}}</td>
-            <td>{{user['role'].value}}</td>
+            <td>
+                <form method="POST" action={{url_for('home.change_role', user_id=user['id'])}}>
+                    <select name="role">
+                        {% for role in roles %}
+                            <option value="{{role}}"
+                                    {% if user['role'].value == role %} selected {% endif %}>
+                                    {{role}}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <input type="submit">
+                </form>
+            </td>
+
         </tr>
         {% endfor %}
     </table>

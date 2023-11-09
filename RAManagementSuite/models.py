@@ -5,10 +5,10 @@ from flask_login import UserMixin
 
 
 class UserRole(Enum):
-    COORDINATOR = "coordinator"
-    SENIOR = "senior"
-    RETURNER = "returner"
-    BASIC = "basic"
+    COORDINATOR = "Coordinator"
+    SENIOR = "Senior RA"
+    RETURNER = "Returned RA"
+    BASIC = "RA"
 
 
 class User(UserMixin, db.Model):

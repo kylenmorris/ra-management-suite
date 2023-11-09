@@ -20,3 +20,22 @@ def create_user(email, name, password):
 def get_all_users():
     return User.query.all()
 
+
+def get_roles_values():
+    return [r.value for r in UserRole]
+
+
+def get_user_by_id(user_id):
+    return User.query.filter_by(id=user_id).first()
+
+
+def change_user_role(user_id, new_role):
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        abort(500, "User Not Found")
+    if new_role != user.role.value:
+        user.role = UserRole(new_role)
+        db.session.commit()
+    else:
+        print("same role given")
+
