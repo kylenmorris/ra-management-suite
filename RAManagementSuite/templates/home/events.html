@@ -197,15 +197,23 @@
                 document.getElementById('editEventStartDate').value = formatToLocalISOString(startTime).slice(0, 16);
                 document.getElementById('editEventEndDate').value = endTime ? formatToLocalISOString(endTime).slice(0, 16) : '';
                 document.getElementById('editColor').value = info.event.backgroundColor;
-                document.getElementById('editEventType').checked = info.event.extendedProps.event_type === 'duty shift';
-                var assignedUserId = info.event.extendedProps.assigned_user_id; // assuming this is how you store the assigned user's id
+                // Check if the 'Duty Shift' checkbox exists
+                var editEventTypeCheckbox = document.getElementById('editEventType');
+                if (editEventTypeCheckbox) {
+                    editEventTypeCheckbox.checked = info.event.extendedProps.event_type === 'duty shift';
+                }
+                // Check if the assigned user select box exists
                 var assignedUserSelect = document.getElementById('editAssignedUserId');
-                for (var i, j = 0; i = assignedUserSelect.options[j]; j++) {
-                    if (i.value == assignedUserId) {
-                        assignedUserSelect.selectedIndex = j;
-                        break;
+                if (assignedUserSelect) {
+                    var assignedUserId = info.event.extendedProps.assigned_user_id;
+                    for (var i = 0; i < assignedUserSelect.options.length; i++) {
+                        if (assignedUserSelect.options[i].value == assignedUserId) {
+                            assignedUserSelect.selectedIndex = i;
+                            break;
+                        }
                     }
                 }
+
 
                 if (isOwner) {
                     // If the user is the owner, make the fields editable and show the Save Changes button
