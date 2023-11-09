@@ -15,18 +15,27 @@ home = Blueprint('home', __name__)
 
 @home.route('/')
 def index():
+    current_page = 'home'
     announcements = announcementRepo.get_announcements()
-    return render_template('home/index.html', announcements=announcements)
+    return render_template('home/index.html', announcements=announcements, current_page=current_page)
+
+@home.route('/announcement')
+def announcement_page():
+    current_page = 'announcement_page'
+    announcements = announcementRepo.get_announcements()
+    return render_template('home/announcement.html', announcements=announcements, current_page=current_page)
 
 
 @home.route('/view/<int:announcement_id>')
 def announcement(announcement_id):
+    current_page = 'announcement_page'
     announcement = announcementRepo.get_announcement(announcement_id)
-    return render_template('home/view.html', announcement=announcement)
+    return render_template('home/view.html', announcement=announcement, current_page=current_page)
 
 
 @home.route('/create', methods=('GET', 'POST'))
 def create():
+    current_page = 'announcement_page'
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
@@ -34,13 +43,14 @@ def create():
             flash('Title is required!')
         else:
             announcementRepo.create_announcement(title, content)
-            return redirect(url_for('home.index'))
+            return redirect(url_for('home.announcement_page'))
 
-    return render_template('home/create.html')
+    return render_template('home/create.html', current_page=current_page)
 
 
 @home.route('/edit/<int:announcement_id>/', methods=('GET', 'POST'))
 def edit(announcement_id):
+    current_page = 'announcement_page'
     announcement = announcementRepo.get_announcement(announcement_id)
 
     if request.method == 'POST':
@@ -50,20 +60,27 @@ def edit(announcement_id):
             flash('Title is required!')
         else:
             announcementRepo.edit_announcement(title, content, announcement_id)
-            return redirect(url_for('home.index'))
+            return redirect(url_for('home.announcement_page'))
 
-    return render_template('home/edit.html', announcement=announcement)
+    return render_template('home/edit.html', announcement=announcement, current_page=current_page)
 
+@home.route('/delete/<int:announcement_id>/')
+def delete_announcement(announcement_id):
+    announcementRepo.del_announcement(announcement_id)
+    return redirect(url_for('home.announcement_page'))
 
 @home.route('/profile')
 @login_required
 def profile():
-    return render_template('home/profile.html', name=current_user.name)
+    current_page = 'Profile'
+    return render_template('home/profile.html', name=current_user.name, current_page=current_page)
+
 
 
 @home.route('/events', methods=['GET', 'POST'])
 @login_required
 def events():
+    current_page = 'Calendar'
     if request.method == 'POST':
         # get data from form and create or update an event
         title = request.form.get('title')
@@ -92,7 +109,8 @@ def events():
     if filter_type:
         events = [event for event in events if event.event_type == filter_type]
 
-    return render_template('home/events.html', events=events, current_user=current_user, EventType=EventType, UserRole=UserRole, users=users)
+    return render_template('home/events.html', events=events, current_user=current_user,
+                           EventType=EventType, UserRole=UserRole, users=users, current_page=current_page)
 
 
 @home.route('/api/events', methods=['GET'])
@@ -138,6 +156,7 @@ def delete_event_route(event_id):
 @home.route('/tasks/create', methods=['GET', 'POST'])
 @login_required
 def create_task_route():
+    current_page = 'Tasks'
     # Check if the user has permission to create tasks
     if current_user.role == UserRole.BASIC:
         flash('You do not have permission to create tasks.')
@@ -156,12 +175,13 @@ def create_task_route():
         return redirect(url_for('home.tasks'))
 
     users = User.query.all()
-    return render_template('home/create_task.html', users=users)
+    return render_template('home/create_task.html', users=users, current_page=current_page)
 
 
 @home.route('/tasks', methods=['GET'])
 @login_required
 def tasks():
+    current_page = 'Tasks'
     if current_user.role == UserRole.BASIC:
         # If the user is basic, show only tasks assigned to them
         tasks = taskRepo.get_tasks_by_user(current_user.id)
@@ -169,12 +189,13 @@ def tasks():
         # If the user has higher privileges, show all tasks
         tasks = taskRepo.get_all_tasks()
 
-    return render_template('home/tasks.html', tasks=tasks, UserRole=UserRole)
+    return render_template('home/tasks.html', tasks=tasks, UserRole=UserRole, current_page=current_page)
 
 
 @home.route('/tasks/edit/<int:task_id>/', methods=['GET', 'POST'])
 @login_required
 def edit_task_route(task_id):
+    current_page = 'Tasks'
     # Check if the user has permission to edit tasks
     if current_user.role == UserRole.BASIC:
         flash('You do not have permission to edit tasks.')
@@ -196,7 +217,7 @@ def edit_task_route(task_id):
         return redirect(url_for('home.tasks'))
 
     users = User.query.all()
-    return render_template('home/edit_task.html', task=task, users=users)
+    return render_template('home/edit_task.html', task=task, users=users, current_page=current_page)
 
 
 @home.route('/tasks/delete/<int:task_id>', methods=['POST'])

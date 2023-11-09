@@ -29,19 +29,20 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 {% if current_user.is_authenticated %}
-                <li class="nav-item active">
+
+                <li class="nav-item {% if current_page == 'home' %}active{% endif %}">
                     <a class="nav-link" href="{{ url_for('home.index')}}">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('home.create')}}">New Announcement</a>
+                <li class="nav-item {% if current_page == 'announcement_page' %}active{% endif %}">
+                    <a class="nav-link" href="{{ url_for('home.announcement_page')}}">Announcement</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% if current_page == 'Profile' %}active{% endif %}">
                     <a class="nav-link" href="{{ url_for('home.profile')}}">Profile</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% if current_page == 'Tasks' %}active{% endif %}">
                     <a class="nav-link" href="{{ url_for('home.tasks')}}">Tasks</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% if current_page == 'Calendar' %}active{% endif %}">
                     <a class="nav-link" href="{{ url_for('home.events')}}">Calendar</a>
                 </li>
                 {% endif %}

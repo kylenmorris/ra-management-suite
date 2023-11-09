@@ -26,3 +26,18 @@ def edit_announcement(title, content, id):
         announcement.title = title
         announcement.content = content
         db.session.commit()
+
+
+def del_announcement(id):
+    try:
+        announcement = Announcement.query.get(id)
+        if announcement:
+            db.session.delete(announcement)
+            db.session.commit()
+            return True  # Return a success indicator
+        else:
+            return False  # Return a failure indicator (announcement not found)
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        db.session.rollback()
+        return False  # Return a failure indicator
