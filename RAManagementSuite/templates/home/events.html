@@ -211,6 +211,7 @@
                             assignedUserSelect.selectedIndex = i;
                             break;
                         }
+                        assignedUserSelect.selectedIndex = 0;
                     }
                 }
 
@@ -225,12 +226,22 @@
                     document.getElementById('saveChangesButton').style.display = 'block';
                     document.getElementById('deleteEventButton').style.display = 'block';
                     document.getElementById('editEventId').value = info.event.id;
+
                 } else {
                     // Otherwise, make the fields readonly and hide the Save Changes button
                     document.getElementById('saveChangesButton').style.display = 'none';
                     document.getElementById('deleteEventButton').style.display = 'none';
+
                 }
 
+                 var editEventTypeCheckbox = document.getElementById('editEventType');
+                if (editEventTypeCheckbox) {
+                    editEventTypeCheckbox.disabled = !isOwner;
+                }
+                var assignedUserSelect = document.getElementById('editAssignedUserId');
+                if (assignedUserSelect) {
+                    assignedUserSelect.disabled = !isOwner;
+                }
 
                 // Show the modal
                 $('#editEventModal').modal('show');

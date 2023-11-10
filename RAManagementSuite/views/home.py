@@ -19,6 +19,7 @@ def index():
     announcements = announcementRepo.get_announcements()
     return render_template('home/index.html', announcements=announcements, current_page=current_page)
 
+
 @home.route('/announcement')
 def announcement_page():
     current_page = 'announcement_page'
@@ -64,17 +65,18 @@ def edit(announcement_id):
 
     return render_template('home/edit.html', announcement=announcement, current_page=current_page)
 
+
 @home.route('/delete/<int:announcement_id>/')
 def delete_announcement(announcement_id):
     announcementRepo.del_announcement(announcement_id)
     return redirect(url_for('home.announcement_page'))
+
 
 @home.route('/profile')
 @login_required
 def profile():
     current_page = 'Profile'
     return render_template('home/profile.html', name=current_user.name, current_page=current_page)
-
 
 
 @home.route('/events', methods=['GET', 'POST'])
