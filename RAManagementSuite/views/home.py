@@ -131,9 +131,21 @@ def users_page():
     return render_template('home/users.html', users=all_users, roles=all_roles, current_page=current_page)
 
 
-@home.route('/change-role/<int:user_id>', methods=['Post'])
+@home.route('/change-role/<int:user_id>', methods=['POST'])
 @login_required
 def change_role(user_id):
     new_role = request.form.get('role')
     userRepo.change_user_role(user_id, new_role)
     return redirect(url_for('home.users_page'))
+
+
+@home.route('/delete-user/<int:user_id>', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    userRepo.delete_user(user_id)
+    return redirect(url_for('home.users_page'))
+
+
+
+
+
