@@ -35,3 +35,10 @@ class Event(db.Model):
     owner = db.relationship('User', backref=db.backref('events', lazy=True))
     color = db.Column(db.String(7), default="#007BFF")
     description = db.Column(db.Text, nullable=True)
+
+
+class SignupCode(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.Integer, nullable=False)
+    created = db.Column(db.DateTime(timezone=True), default=datetime.now)
+    used = db.Column(db.Boolean, nullable=False, default=False)

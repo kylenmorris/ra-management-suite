@@ -56,10 +56,12 @@ def edit(announcement_id):
 
     return render_template('home/edit.html', announcement=announcement)
 
+
 @home.route('/delete/<int:announcement_id>/')
 def delete_announcement(announcement_id):
     announcementRepo.del_announcement(announcement_id)
     return redirect(url_for('home.announcement_page'))
+
 
 @home.route('/profile')
 @login_required

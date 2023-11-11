@@ -3,7 +3,7 @@ from flask import Flask
 from flask_login import LoginManager
 
 from extensions import db, migrate
-from models import Announcement
+from models import Announcement, SignupCode
 
 from models import User
 from views.auth import auth
@@ -22,6 +22,15 @@ def initialize_database():
         ]
         for ann in initial_announcements:
             db.session.add(ann)
+        db.session.commit()
+
+    if not SignupCode.query.first():
+        initial_signup_codes = [
+            SignupCode(code=1234),
+            SignupCode(code=1111)
+        ]
+        for code in initial_signup_codes:
+            db.session.add(code)
         db.session.commit()
 
 
