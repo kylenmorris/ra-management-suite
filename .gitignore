@@ -3,4 +3,6 @@ RAManagementSuite/views/__pycache__/
 RAManagementSuite/__pycache__/
 migrations/versions/__pycache__/
 migrations/__pycache__/
-
+.idea/misc.xml
+.idea/gitlab.iml
+RAManagementSuite/database.db

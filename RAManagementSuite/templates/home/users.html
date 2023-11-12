@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} User Management {% endblock %}</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Delete User</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+
+        <tr class="rows">
+            <td class="name">{{user['name']}}</td>
+            <td class="email">{{user['email']}}</td>
+            {% if current_user.id != user['id'] %}
+            <td class="role">
+                <form name="role_form" method="POST" action={{url_for('home.change_role', user_id=user['id'])}}>
+                    <select name="role">
+                        {% for role in roles %}
+                            {% if user['role'].value == role %}
+                            <option value="{{role}}" selected > {{role}}</option>
+                            {% else %}
+                            <option value="{{role}}"> {{role}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <input type="submit" name="submit" disabled>
+                </form>
+            </td>
+            <td class="delete">
+                <form name="delete_form" method="POST" action={{url_for('home.delete_user', user_id=user['id'])}}>
+                    <input type="submit" name="delete" value="Delete" class="delete_button">
+                </form>
+
+            </td>
+            {% else %}
+            <td>{{user['role'].value}}</td>
+            <td>Current User</td>
+            {% endif %}
+        </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+
+        let role_col = document.getElementsByClassName("role")
+
+
+        for(let i = 0; i < role_col.length; i++) {
+            const row = role_col[i].children
+            const selector = row['role_form'].children['role']
+            const submit = row['role_form'].children['submit']
+            const start_role = selector.value;
+            selector.addEventListener('change', function () {
+                if (selector.value !== start_role) {
+                    submit.removeAttribute('disabled');
+                } else {
+                    submit.setAttribute('disabled', '');
+                }
+            });
+        }
+
+
+        let delete_col = document.getElementsByClassName('delete')
+
+        for(let i = 0; i < delete_col.length; i++) {
+            const row = delete_col[i].children
+            const delete_form = row['delete_form'];
+
+
+            const delete_button = delete_form.children['delete'];
+
+
+            delete_button.addEventListener('click',function(event){
+                event.preventDefault()
+
+                if (confirm('Are you sure you want to Delete this user?')){
+                    delete_form.submit();
+                }
+
+
+            });
+
+
+        }
+
+
+    });
+
+
+
+
+</script>
+
+<style>
+
+    table{
+        border-collapse: collapse;
+        border-spacing: 1px;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        width: inherit;
+        margin: 0 auto;
+        position: relative;
+    }
+    table *{
+        position: relative;
+
+    }
+    table td, table th{
+        padding-top: 4px;
+        padding-bottom: 4px;
+        padding-left: 8px;
+    }
+    table th{
+	    background-color: #36304a;
+	    color: #ffffff;
+	    font-size: 13px;
+	    border: 1px solid #54585d;
+        text-align: center;
+    }
+    table tbody td {
+        color: #636363;
+        border: 1px solid #dddfe1;
+    }
+    table tbody tr {
+        background-color: #f9fafb;
+    }
+    table tbody tr:nth-child(odd) {
+        background-color: #ffffff;
+    }
+
+
+
+
+
+</style>
+
+
+
+{% endblock %}

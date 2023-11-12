@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 from models import Event
 from repos import announcementRepo
 from repos.eventRepo import create_event, get_all_events, update_event, delete_event
+from repos import userRepo
 
 home = Blueprint('home', __name__)
 
@@ -121,3 +122,32 @@ def delete_event_route(event_id):
         delete_event(event_id)
         return jsonify(success=True)
     return jsonify(success=False, message="Event not found or you don't have the permission to delete it")
+
+
+@home.route('/users', methods=['GET'])
+@login_required
+def users_page():
+    current_page = 'Users'
+    all_users = userRepo.get_all_users()
+    all_roles = userRepo.get_roles_values()
+    return render_template('home/users.html', users=all_users, roles=all_roles, current_page=current_page)
+
+
+@home.route('/change-role/<int:user_id>', methods=['POST'])
+@login_required
+def change_role(user_id):
+    new_role = request.form.get('role')
+    userRepo.change_user_role(user_id, new_role)
+    return redirect(url_for('home.users_page'))
+
+
+@home.route('/delete-user/<int:user_id>', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    userRepo.delete_user(user_id)
+    return redirect(url_for('home.users_page'))
+
+
+
+
+
