@@ -24,6 +24,8 @@ class Announcement(db.Model):
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
     created = db.Column(db.DateTime(timezone=True), default=datetime.now)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User', backref=db.backref('announcements', lazy=True))
 
 
 class Event(db.Model):

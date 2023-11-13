@@ -2,6 +2,7 @@
 
 {% block content %}
     <h2>{% block title %} {{ announcement['title'] }} {% endblock %}</h2>
+        <p class="mr-2 mb-0">{{ announcement.user.name }}</p>
     <span class="badge badge-primary">{{ announcement['created'] }}</span>
     <p>{{ announcement['content'] }}</p>
 {% endblock %}
