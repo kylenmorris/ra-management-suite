@@ -14,8 +14,8 @@ def get_announcements():
     return Announcement.query.all()
 
 
-def create_announcement(title, content):
-    announcement = Announcement(title=title, content=content)
+def create_announcement(title, content, user_id):
+    announcement = Announcement(title=title, content=content, user_id=user_id)
     db.session.add(announcement)
     db.session.commit()
 
@@ -26,6 +26,7 @@ def edit_announcement(title, content, id):
         announcement.title = title
         announcement.content = content
         db.session.commit()
+
 
 def del_announcement(id):
     try:
@@ -40,8 +41,3 @@ def del_announcement(id):
         print(f"An error occurred: {str(e)}")
         db.session.rollback()
         return False  # Return a failure indicator
-
-
-
-
-

@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, request, url_for, flash, redirect, jsonify
 from flask_login import login_required, current_user
-
+from models import UserRole
 from models import Event
 from repos import announcementRepo
 from repos.eventRepo import create_event, get_all_events, update_event, delete_event
@@ -19,12 +19,12 @@ def index():
 def announcement_page():
     current_page = 'announcement_page'
     announcements = announcementRepo.get_announcements()
-    return render_template('home/announcement.html', announcements=announcements, current_page=current_page)
+    return render_template('home/announcement.html', announcements=announcements, current_page=current_page, UserRole=UserRole)
 
 @home.route('/view/<int:announcement_id>')
 def announcement(announcement_id):
     announcement = announcementRepo.get_announcement(announcement_id)
-    return render_template('home/view.html', announcement=announcement)
+    return render_template('home/view.html', announcement=announcement, UserRole=UserRole)
 
 
 @home.route('/create', methods=('GET', 'POST'))
@@ -36,7 +36,7 @@ def create():
         if not title:
             flash('Title is required!')
         else:
-            announcementRepo.create_announcement(title, content)
+            announcementRepo.create_announcement(title, content, current_user.id)
             return redirect(url_for('home.announcement_page'))
 
     return render_template('home/create.html', current_page=current_page)
