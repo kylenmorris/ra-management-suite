@@ -1,4 +1,4 @@
-import os
+# import os
 from flask import Flask
 from flask_login import LoginManager
 
@@ -9,8 +9,8 @@ from models import User
 from views.auth import auth
 from views.home import home
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-DB_PATH = os.path.join(BASE_DIR, "database.db")
+# BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+# DB_PATH = os.path.join(BASE_DIR, "database.db")
 
 
 def initialize_database():
