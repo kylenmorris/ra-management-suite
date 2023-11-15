@@ -37,7 +37,7 @@ def initialize_database():
 
     if not userRepo.get_user_by_email("coordinator@test.com"):
         hashed_password = generate_password_hash("password")
-        db.session.add(User(name="coordinator", email="coordinator@admin.com", password=hashed_password, role="COORDINATOR"))
+        db.session.add(User(name="coordinator", email="coordinator@test.com", password=hashed_password, role="COORDINATOR"))
         db.session.commit()
 
     if not userRepo.get_user_by_email("senior@test.com"):
