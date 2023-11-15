@@ -2,8 +2,8 @@ from datetime import datetime
 from models import Event
 from extensions import db
 
-from RAManagementSuite.models import Event, EventType
-from RAManagementSuite.extensions import db
+from models import Event, EventType
+from extensions import db
 
 
 def create_event(title, start_date, end_date, owner_id, color, description,

@@ -1,4 +1,4 @@
-from RAManagementSuite.models import db, Task, User, TaskPriority, TaskStatus
+from models import db, Task, User, TaskPriority, TaskStatus
 from datetime import datetime
 
 

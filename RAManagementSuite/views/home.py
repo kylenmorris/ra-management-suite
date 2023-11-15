@@ -9,9 +9,9 @@ from repos import announcementRepo
 from repos.eventRepo import create_event, get_all_events, update_event, delete_event
 from repos import userRepo
 
-from RAManagementSuite.models import Event, UserRole, TaskPriority, User, TaskStatus, EventType
-from RAManagementSuite.repos import announcementRepo, taskRepo
-from RAManagementSuite.repos.eventRepo import create_event, get_all_events, update_event, delete_event
+from models import Event, UserRole, TaskPriority, User, TaskStatus, EventType
+from repos import announcementRepo, taskRepo
+from repos.eventRepo import create_event, get_all_events, update_event, delete_event
 
 # from RAManagementSuite.repos.taskRepo import create_task, get_all_tasks, get_task_by_id, update_task
 
@@ -68,12 +68,6 @@ def edit(announcement_id):
             return redirect(url_for('home.announcement_page'))
 
     return render_template('home/edit.html', announcement=announcement, current_page=current_page)
-
-
-@home.route('/delete/<int:announcement_id>/')
-def delete_announcement(announcement_id):
-    announcementRepo.del_announcement(announcement_id)
-    return redirect(url_for('home.announcement_page'))
 
 
 @home.route('/delete/<int:announcement_id>/')

@@ -22,6 +22,7 @@ class TaskStatus(Enum):
     IN_PROGRESS = "In Progress"
     NOT_STARTED = "Not Started"
 
+
 class EventType(Enum):
     NORMAL = "normal"
     DUTY_SHIFT = "duty shift"
@@ -32,6 +33,12 @@ task_assignments = db.Table('task_assignments',
                             db.Column('task_id', db.Integer, db.ForeignKey('task.id'), primary_key=True),
                             db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
                             )
+
+
+# class TaskAssignment(db.Model):
+#     task_assignment_id = db.Column(db.Integer, primary_key=True)
+#     task_id = db.Column(db.Integer, db.ForeignKey('task.id'), nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 
 class User(UserMixin, db.Model):
