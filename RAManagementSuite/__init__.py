@@ -1,11 +1,13 @@
 import os
 from flask import Flask
 from flask_login import LoginManager
+from werkzeug.security import generate_password_hash
 
 from extensions import db, migrate
 from models import Announcement, SignupCode
 
 from models import User
+from repos import userRepo
 from views.auth import auth
 from views.home import home
 
@@ -31,6 +33,26 @@ def initialize_database():
         ]
         for code in initial_signup_codes:
             db.session.add(code)
+        db.session.commit()
+
+    if not userRepo.get_user_by_email("coordinator@test.com"):
+        hashed_password = generate_password_hash("password")
+        db.session.add(User(name="coordinator", email="coordinator@admin.com", password=hashed_password, role="COORDINATOR"))
+        db.session.commit()
+
+    if not userRepo.get_user_by_email("senior@test.com"):
+        hashed_password = generate_password_hash("password")
+        db.session.add(User(name="senior", email="senior@test.com", password=hashed_password, role="SENIOR"))
+        db.session.commit()
+
+    if not userRepo.get_user_by_email("returner@test.com"):
+        hashed_password = generate_password_hash("password")
+        db.session.add(User(name="admin", email="returner@test.com", password=hashed_password, role="RETURNER"))
+        db.session.commit()
+
+    if not userRepo.get_user_by_email("basic@test.com"):
+        hashed_password = generate_password_hash("password")
+        db.session.add(User(name="admin", email="basic@test.com", password=hashed_password, role="BASIC"))
         db.session.commit()
 
 
