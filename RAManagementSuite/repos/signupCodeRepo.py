@@ -24,20 +24,19 @@ def edit_signup_code(id, used):
         code.used = used
         db.session.commit()
 
-
-# def del_announcement(id):
-#     try:
-#         announcement = Announcement.query.get(id)
-#         if announcement:
-#             db.session.delete(announcement)
-#             db.session.commit()
-#             return True  # Return a success indicator
-#         else:
-#             return False  # Return a failure indicator (announcement not found)
-#     except Exception as e:
-#         print(f"An error occurred: {str(e)}")
-#         db.session.rollback()
-#         return False  # Return a failure indicator
+def delete_signup_code(id):
+    try:
+        code = SignupCode.query.get(id)
+        if code:
+            db.session.delete(code)
+            db.session.commit()
+            return True  # Return a success indicator
+        else:
+            return False  # Return a failure indicator (announcement not found)
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        db.session.rollback()
+        return False  # Return a failure indicator
 
 
 

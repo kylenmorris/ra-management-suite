@@ -12,9 +12,9 @@
             <th>Delete User</th>
         </tr>
         </thead>
+
         <tbody>
         {% for user in users %}
-
         <tr class="rows">
             <td class="name">{{user['name']}}</td>
             <td class="email">{{user['email']}}</td>
@@ -48,6 +48,33 @@
         {% endfor %}
         </tbody>
     </table>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Code</th>
+            <th>Created</th>
+            <th>Used</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for code in codes %}
+        <tr class="rows">
+            <td class="name">{{code['code']}}</td>
+            <td class="created">{{code['created']}}</td>
+            <td class="used">{{code['usd']}}</td>
+            <td class="delete">
+                <form name="delete_form" method="POST" action={{url_for('home.delete_code', code_id=code['id'])}}>
+                    <input type="submit" name="delete" value="Delete" class="delete_button">
+                </form>
+            </td>
+        </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

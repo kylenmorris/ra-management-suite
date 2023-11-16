@@ -5,7 +5,7 @@ from flask import Flask, Blueprint, render_template, request, url_for, flash, re
 from flask_login import login_required, current_user
 from models import UserRole
 from models import Event
-from repos import announcementRepo
+from repos import announcementRepo, signupCodeRepo
 from repos.eventRepo import create_event, get_all_events, update_event, delete_event
 from repos import userRepo
 
@@ -165,7 +165,8 @@ def users_page():
     current_page = 'Users'
     all_users = userRepo.get_all_users()
     all_roles = userRepo.get_roles_values()
-    return render_template('home/users.html', users=all_users, roles=all_roles, current_page=current_page)
+    all_codes = signupCodeRepo.get_signup_codes()
+    return render_template('home/users.html', users=all_users, roles=all_roles, codes=all_codes, current_page=current_page)
 
 
 @home.route('/change-role/<int:user_id>', methods=['POST'])
@@ -181,7 +182,14 @@ def change_role(user_id):
 def delete_user(user_id):
     userRepo.delete_user(user_id)
     return redirect(url_for('home.users_page'))
-    
+
+
+@home.route('/delete-code/<int:code_id>', methods=['POST'])
+@login_required
+def delete_code(code_id):
+    signupCodeRepo.delete_signup_code(code_id)
+    return redirect(url_for('home.users_page'))
+
 
 @home.route('/tasks/create', methods=['GET', 'POST'])
 @login_required
