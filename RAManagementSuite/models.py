@@ -5,15 +5,15 @@ from flask_login import UserMixin
 
 
 class UserRole(Enum):
-    COORDINATOR = "coordinator"
-    SENIOR = "senior"
-    RETURNER = "returner"
-    BASIC = "basic"
+    COORDINATOR = "Coordinator"
+    SENIOR = "Senior RA"
+    RETURNER = "Returned RA"
+    BASIC = "RA"
+
 
 class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(100))
-    last_name = db.Column(db.String(100))
+    id = db.Column(db.Integer, primary_key=True)  # primary keys are required by SQLAlchemy
+    name = db.Column(db.String(1000))
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(1000))
     role = db.Column(db.Enum(UserRole), default=UserRole.BASIC, nullable=False)
@@ -37,19 +37,27 @@ class Event(db.Model):
     description = db.Column(db.Text, nullable=True)
 
 
-# class UserProfile(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     first_name = db.Column(db.String(50))
-#     last_name = db.Column(db.String(50))
-#     birthdate = db.Column(db.Date)
-#     phone_number = db.Column(db.String(20))
-#     pronouns = db.Column(db.String(20))
-#     gender = db.Column(db.String(20))
-#     major = db.Column(db.String(50))
-#     address_line1 = db.Column(db.String(100))
-#     address_line2 = db.Column(db.String(100))
-#     postalcode = db.Column(db.String(10))
-#     city = db.Column(db.String(50))
-#     province = db.Column(db.String(50))
-#     shift_availability = db.Column(db.String(100))
-#     user = db.relationship('User', back_populates='profile')
+class SignupCode(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.Integer, nullable=False)
+    created = db.Column(db.DateTime(timezone=True), default=datetime.now)
+    used = db.Column(db.Boolean, nullable=False, default=False)
+
+
+class ProfileForm(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
+    user = db.relationship('User', backref=db.backref('profile', uselist=False))
+    firstname = db.Column(db.String(100))
+    lastname = db.Column(db.String(100))
+    birthdate = db.Column(db.Date)
+    phonenumber = db.Column(db.String(20))
+    gender = db.Column(db.String(10))
+    pronouns = db.Column(db.String(20))
+    major = db.Column(db.String(100))
+    addressline1 = db.Column(db.String(255))
+    addressline2 = db.Column(db.String(255))
+    postcode = db.Column(db.String(20))
+    city = db.Column(db.String(100))
+    province = db.Column(db.String(100))
+    shift_availability = db.Column(db.String(200))

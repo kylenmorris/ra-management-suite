@@ -1,42 +1,51 @@
-from models import User
-# from models import UserProfile
+from models import User, UserRole
 from extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.exceptions import abort
-
-# from RAManagementSuite.models import UserProfile
 
 
 def get_user_by_email(email):
     return User.query.filter_by(email=email).first()
 
 
-def create_user(first_name, last_name, email, password):
+def create_user(email, name, password):
     hashed_password = generate_password_hash(password)
-    user = User(first_name=first_name, last_name=last_name, email=email, password=hashed_password)
+    user = User(email=email, name=name, password=hashed_password)
     db.session.add(user)
     db.session.commit()
 
 
 # Additional user operations can go here...
 
-# def create_user_profile(user_id, first_name, last_name, birthdate, phone_number, pronouns, gender, major,
-#                         address_line_1, address_line_2, postcode, city, province, shift_availability):
-#     profile = UserProfile(
-#         user_id=user_id,
-#         first_name=first_name,
-#         last_name=last_name,
-#         birthdate=birthdate,
-#         phone_number=phone_number,
-#         pronouns=pronouns,
-#         gender=gender,
-#         major=major,
-#         address_line_1=address_line_1,
-#         address_line_2=address_line_2,
-#         postcode=postcode,
-#         city=city,
-#         province=province,
-#         shift_availability=shift_availability
-#     )
-#     db.session.add(profile)
-#     db.session.commit()
+
+def get_all_users():
+    return User.query.all()
+
+
+def get_roles_values():
+    return [r.value for r in UserRole]
+
+
+def get_user_by_id(user_id):
+    return User.query.filter_by(id=user_id).first()
+
+
+def change_user_role(user_id, new_role):
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        abort(500, "User Not Found")
+    if new_role != user.role.value:
+        user.role = UserRole(new_role)
+        db.session.commit()
+    else:
+        # should never be triggered
+        abort(500, "User Already Has Role")
+
+
+def delete_user(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        abort(500, "User Not Found Can't Remove")
+    else:
+        db.session.delete(user)
+        db.session.commit()

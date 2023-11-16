@@ -35,10 +35,10 @@ def signup():
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
 
-        # Check if passwords match
-        if password != confirm_password:
-            flash('Passwords do not match')
-            return redirect(url_for('auth.signup'))
+        # # Check if passwords match
+        # if password != confirm_password:
+        #     flash('Passwords do not match')
+        #     return redirect(url_for('auth.signup'))
 
         user = userRepo.get_user_by_email(email)
 

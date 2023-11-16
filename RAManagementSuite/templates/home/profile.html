@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
+<form id="profileForm" method="POST" action="{{url_for('home.profile')}}">
+
 <div class="container rounded bg-white mt-5 mb-5">
     <div class="row">
         <div class="col-md-3 border-right">
@@ -16,20 +18,27 @@
                     <h4 class="text-right">Profile Settings</h4>
                 </div>
                 <div class="row mt-2">
-                    <div class="col-md-4">
-                        <label class="labels">First Name</label>
-                        <input type="text" class="form-control" placeholder="First Name" value="" readonly>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="labels">Last Name</label>
-                        <input type="text" class="form-control" value="" placeholder="Last Name" readonly>
-                    </div>
+<!--                    <div class="col-md-4">-->
+<!--                        <label class="labels">{{ current_user.name }}</label>-->
+<!--                        <input type="text" class="form-control" placeholder="First Name" value="" readonly>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-4">-->
+<!--                        <label class="labels">Last Name</label>-->
+<!--                        <input type="text" class="form-control" value="" placeholder="Last Name" readonly>-->
+<!--                    </div>-->
+                            <div class="col-md-4">
+            <label class="labels">First Name</label>
+            <input type="text" class="form-control" name="firstname" value="" required>
+        </div>
+        <div class="col-md-4">
+            <label class="labels">Last Name</label>
+            <input type="text" class="form-control" name="lastname" value="" readonly>
+        </div>
                     <div class="col-md-4">
                         <label class="labels">Birthdate</label>
                         <input type="date" class="form-control" value="" readonly>
                     </div>
                 </div>
-                <!-- Add additional fields here, keeping the 'readonly' attribute -->
                 <div class="row mt-3">
                     <div class="col-md-4">
                         <label class="labels">Phone Number</label>
@@ -89,34 +98,34 @@
                         <input type="text" class="form-control" placeholder="Shift Availability" value="" readonly>
                     </div>
                 </div>
-                <div class="mt-3 text-center">
-                    <button class="btn btn-primary profile-button" id="edit-profile-button" type="button">Edit Profile</button>
-                </div>
+    <div class="mt-3 text-center">
+        <button class="btn btn-primary profile-button" id="edit-profile-button" type="button">Edit Profile</button>
+    </div>
             </div>
         </div>
     </div>
 </div>
-
+</form>
 <script>
-    // Get a reference to the "Edit Profile" button
     const editProfileButton = document.getElementById("edit-profile-button");
-
-    // Get references to the input and select fields you want to make editable
     const editableFields = document.querySelectorAll(".form-control[readonly], .select[readonly]");
 
-    // Function to toggle the "readonly" attribute on input and select fields and change button text
     function toggleEditable() {
         for (const field of editableFields) {
             field.readOnly = !field.readOnly;
         }
 
-        // Change the button text based on the readonly state
         editProfileButton.innerText = editableFields[0].readOnly ? "Edit Profile" : "Save Changes";
+
+        // If saving changes, submit the form
+        if (!editableFields[0].readOnly) {
+            document.getElementById("profileForm").submit();
+        }
     }
 
-    // Add a click event listener to the "Edit Profile" button
     editProfileButton.addEventListener("click", toggleEditable);
 </script>
+
 
 
 {% endblock %}

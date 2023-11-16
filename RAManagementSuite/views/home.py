@@ -4,6 +4,9 @@ from flask_login import login_required, current_user
 from models import Event
 from repos import announcementRepo
 from repos.eventRepo import create_event, get_all_events, update_event, delete_event
+from models import ProfileForm
+
+from RAManagementSuite.extensions import db
 
 home = Blueprint('home', __name__)
 
@@ -61,11 +64,46 @@ def delete_announcement(announcement_id):
     announcementRepo.del_announcement(announcement_id)
     return redirect(url_for('home.announcement_page'))
 
-@home.route('/profile')
+# @home.route('/profile')
+# @login_required
+# def profile():
+#     current_page = 'Profile'
+#     return render_template('home/profile.html', name=current_user.name, current_page=current_page)
+#
+
+@home.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    current_page = 'Profile'
-    return render_template('home/profile.html', name=current_user.name, current_page=current_page)
+    form = ProfileForm()
+
+    # Fetch the user's profile from the database
+    user_profile = ProfileForm.query.filter_by(user_id=current_user.id).first()
+    if user_profile is None:
+        user_profile = ProfileForm(user_id=current_user.id)
+        db.session.add(user_profile)
+        db.session.commit()
+
+    if request.method == 'POST':
+        # Update the profile fields with form data
+        user_profile.firstname = request.form.get('firstname')
+        user_profile.lastname = request.form.get('lastname')
+        user_profile.birthdate = request.form.get('birthdate')
+        user_profile.phonenumber = request.form.get('phonenumber')
+        user_profile.gender = request.form.get('gender')
+        user_profile.pronouns = request.form.get('pronouns')
+        user_profile.major = request.form.get('major')
+        user_profile.addressline1 = request.form.get('addressline1')
+        user_profile.addressline2 = request.form.get('addressline2')
+        user_profile.postcode = request.form.get('postcode')
+        user_profile.city = request.form.get('city')
+        user_profile.province = request.form.get('province')
+        user_profile.shift_availability = request.form.get('shift_availability')
+
+        db.session.commit()
+        flash('Profile updated successfully', 'success')
+        return redirect(url_for('home.profile'))
+
+    return render_template('home/profile.html', form=form, user_profile=user_profile)
 
 
 @home.route('/events', methods=['GET', 'POST'])
@@ -119,3 +157,14 @@ def delete_event_route(event_id):
         delete_event(event_id)
         return jsonify(success=True)
     return jsonify(success=False, message="Event not found or you don't have the permission to delete it")
+
+
+user_data = {}
+
+# @home.route('/submit_profile', methods=['POST'])
+# def submit_profile():
+#     if request.method == 'POST':
+#         user_id = current_user.id  # Adjust this based on your authentication mechanism
+#         user_data[user_id] = request.form.to_dict()
+#
+#     return redirect(url_for('profile'))
