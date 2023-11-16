@@ -32,9 +32,6 @@
             margin-left: 0;
             margin-top: -10px;
         }
-        .task_item {
-            overflow: hidden;
-        }
         h6 {
             /*position: relative;
             left: -125px;*/
@@ -52,6 +49,12 @@
             float: left;
             width: 360px;
             word-wrap: break-word;
+        }
+        .task_item {
+            overflow: hidden;
+        }
+        .task_details {
+            margin-top: 10px; /* Adjust the margin as needed */
         }
         h2, h4 {
             display: inline;
@@ -83,11 +86,13 @@
         <br>
         <br>
         {% for task in tasks if task.priority == TaskPriority.HIGH %}
-            <h5>{{ task.title }}</h5>
-            <br>
-            <h6>{{ task.deadline|formatdatetime }}</h6>
-            <br>
-            <hr class="task_hr">
+            <div class="task_item">
+                <h3>{{ task.title }}</h3>
+                <div class="task_details">
+                    <p>{{ task.deadline|formatdatetime }}</p>
+                    <hr class="task_hr">
+                </div>
+            </div>
         {% endfor %}
     </div>
 
