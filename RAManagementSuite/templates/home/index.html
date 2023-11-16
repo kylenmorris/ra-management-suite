@@ -3,18 +3,17 @@
 {% block content %}
     <style>
         h1 {
-            color: royalblue;
             background: lightblue;
             border-radius: 15px;
             padding: 15px;
             width: 736px;
         }
-        .announcement-container {
+        .announcement_container {
             float: left; /* float announcements to the left */
             width: 50%; /* take up half of the width */
             overflow: auto;
         }
-        .task-container {
+        .task_container {
             float: right; /* float tasks to the right */
             width: 50%; /* take up half of the width */
             overflow: auto;
@@ -30,7 +29,16 @@
             /*width: 32%;
             float: right;*/
             width: 80%;
-            margin-right: 0;
+            margin-left: 0;
+            margin-top: -10px;
+        }
+        .task_item {
+            overflow: hidden;
+        }
+        h6 {
+            /*position: relative;
+            left: -125px;*/
+            margin-left: 0;
         }
         a {
             display: block;
@@ -41,19 +49,22 @@
             word-wrap: break-word;
         }
         h5 {
-            float: right;
+            float: left;
+            width: 360px;
+            word-wrap: break-word;
         }
         h2, h4 {
             display: inline;
             font-size: 2em;
         }
         h4 {
-            float: right;
+            float: left;
         }
+
     </style>
     <h1>{% block title %} Welcome to the RA Management Suite {% endblock %}</h1>
     <br>
-    <div class="announcement-container">
+    <div class="announcement_container">
         <h2>{{ 'Recent Announcements:' }}</h2>
         <br>
         <br>
@@ -66,14 +77,18 @@
             <hr class="announcement_hr">
         {% endfor %}
     </div>
-    <div class="task-container">
+    <div class="task_container">
         <h4>{{ 'High Priority Tasks:' }}</h4>
+        <br>
         <br>
         <br>
         {% for task in tasks if task.priority == TaskPriority.HIGH %}
             <h5>{{ task.title }}</h5>
-            <p>{{ task.deadline|formatdatetime }}</p>
+            <br>
+            <h6>{{ task.deadline|formatdatetime }}</h6>
+            <br>
             <hr class="task_hr">
         {% endfor %}
     </div>
+
 {% endblock %}
