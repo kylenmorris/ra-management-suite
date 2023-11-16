@@ -11,6 +11,8 @@ from repos import userRepo
 from views.auth import auth
 from views.home import home
 
+from datetime import datetime, timedelta
+
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DB_PATH = os.path.join(BASE_DIR, "database.db")
 
@@ -27,9 +29,12 @@ def initialize_database():
         db.session.commit()
 
     if not SignupCode.query.first():
+        expired_date = datetime.today() - timedelta(days=8)
+
         initial_signup_codes = [
             SignupCode(code=1234),
-            SignupCode(code=1111)
+            SignupCode(code=9999, used=True),
+            SignupCode(code=1001, created=expired_date)
         ]
         for code in initial_signup_codes:
             db.session.add(code)
