@@ -22,7 +22,8 @@ home = Blueprint('home', __name__)
 def index():
     current_page = 'home'
     announcements = announcementRepo.get_announcements()
-    return render_template('home/index.html', announcements=announcements, current_page=current_page)
+    tasks = taskRepo.get_tasks_by_user(current_user.id)
+    return render_template('home/index.html', announcements=announcements, tasks=tasks, TaskPriority=TaskPriority, current_page=current_page)
 
 
 @home.route('/announcement')
