@@ -6,7 +6,7 @@ from repos import announcementRepo, userProfileRepo
 from repos.eventRepo import create_event, get_all_events, update_event, delete_event
 from models import ProfileForm
 
-from RAManagementSuite.extensions import db
+from extensions import db
 
 home = Blueprint('home', __name__)
 
@@ -17,11 +17,13 @@ def index():
     announcements = announcementRepo.get_announcements()
     return render_template('home/index.html', announcements=announcements, current_page=current_page)
 
+
 @home.route('/announcement')
 def announcement_page():
     current_page = 'announcement_page'
     announcements = announcementRepo.get_announcements()
     return render_template('home/announcement.html', announcements=announcements, current_page=current_page)
+
 
 @home.route('/view/<int:announcement_id>')
 def announcement(announcement_id):
@@ -59,10 +61,12 @@ def edit(announcement_id):
 
     return render_template('home/edit.html', announcement=announcement)
 
+
 @home.route('/delete/<int:announcement_id>/')
 def delete_announcement(announcement_id):
     announcementRepo.del_announcement(announcement_id)
     return redirect(url_for('home.announcement_page'))
+
 
 # @home.route('/profile')
 # @login_required
@@ -70,6 +74,7 @@ def delete_announcement(announcement_id):
 #     current_page = 'Profile'
 #     return render_template('home/profile.html', name=current_user.name, current_page=current_page)
 #
+
 
 @home.route('/profile', methods=['GET', 'POST'])
 @login_required
@@ -82,22 +87,27 @@ def profile():
         userProfileRepo.create_blank_user_profile(current_user.id)
 
     if request.method == 'POST':
-        # Update the profile fields with form data
-        user_profile.firstname = request.form.get('firstname')
-        user_profile.lastname = request.form.get('lastname')
-        user_profile.birthdate = request.form.get('birthdate')
-        user_profile.phonenumber = request.form.get('phonenumber')
-        user_profile.gender = request.form.get('gender')
-        user_profile.pronouns = request.form.get('pronouns')
-        user_profile.major = request.form.get('major')
-        user_profile.addressline1 = request.form.get('addressline1')
-        user_profile.addressline2 = request.form.get('addressline2')
-        user_profile.postcode = request.form.get('postcode')
-        user_profile.city = request.form.get('city')
-        user_profile.province = request.form.get('province')
-        user_profile.shift_availability = request.form.get('shift_availability')
+        id = request.form.get('id')
+        firstname = request.form.get('firstname')
+        lastname = request.form.get('lastname')
+        birthdate = request.form.get('birthdate')
+        phonenumber = request.form.get('phonenumber')
+        gender = request.form.get('gender')
+        pronouns = request.form.get('pronouns')
+        major = request.form.get('major')
+        addressline1 = request.form.get('addressline1')
+        addressline2 = request.form.get('addressline2')
+        postcode = request.form.get('postcode')
+        city = request.form.get('city')
+        province = request.form.get('province')
+        shift_availability = request.form.get('shift_availability')
 
-        db.session.commit()
+        userProfileRepo.edit_user_profile(id=id, user_id=current_user.id,
+                                          firstname=firstname, lastname=lastname, birthdate=birthdate,
+                                          phonenumber=phonenumber, gender=gender, pronouns=pronouns,
+                                          major=major, addressline1=addressline1, addressline2=addressline2,
+                                          postcode=postcode, city=city, province=province, shift_availability=shift_availability)
+
         flash('Profile updated successfully', 'success')
         return redirect(url_for('home.profile'))
 
