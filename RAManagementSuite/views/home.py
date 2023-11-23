@@ -2,7 +2,7 @@ from flask import Flask, Blueprint, render_template, request, url_for, flash, re
 from flask_login import login_required, current_user
 
 from models import Event
-from repos import announcementRepo
+from repos import announcementRepo, userProfileRepo
 from repos.eventRepo import create_event, get_all_events, update_event, delete_event
 from models import ProfileForm
 
@@ -79,9 +79,7 @@ def profile():
     # Fetch the user's profile from the database
     user_profile = ProfileForm.query.filter_by(user_id=current_user.id).first()
     if user_profile is None:
-        user_profile = ProfileForm(user_id=current_user.id)
-        db.session.add(user_profile)
-        db.session.commit()
+        userProfileRepo.create_blank_user_profile(current_user.id)
 
     if request.method == 'POST':
         # Update the profile fields with form data

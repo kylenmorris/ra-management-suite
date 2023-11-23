@@ -1,7 +1,13 @@
 from flask import request
 from extensions import db
 
-from RAManagementSuite.models import ProfileForm
+from models import ProfileForm
+
+
+def create_blank_user_profile(user_id):
+    user_profile = ProfileForm(user_id=user_id)
+    db.session.add(user_profile)
+    db.session.commit()
 
 
 def create_user_profile(user_id):
