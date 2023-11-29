@@ -45,9 +45,11 @@
                 <li class="nav-item {% if current_page == 'Calendar' %}active{% endif %}">
                     <a class="nav-link" href="{{ url_for('home.events')}}">Calendar</a>
                 </li>
+                {% if current_user.role.value == "Coordinator" %}
                 <li class="nav-item {% if current_page == 'Users' %}active{% endif %}">
                     <a class="nav-link" href="{{ url_for('home.users_page')}}">Users</a>
                 </li>
+                {% endif %}
                 {% endif %}
             </ul>
 

@@ -33,7 +33,7 @@ def get_user_by_id(user_id):
 def change_user_role(user_id, new_role):
     user = User.query.filter_by(id=user_id).first()
     if user is None:
-        abort(500, "User Not Found")
+        abort(500, "ERROR 500: User Not Found")
     if new_role != user.role.value:
         user.role = UserRole(new_role)
         db.session.commit()
@@ -45,7 +45,7 @@ def change_user_role(user_id, new_role):
 def delete_user(user_id):
     user = User.query.filter_by(id=user_id).first()
     if user is None:
-        abort(500, "User Not Found Can't Remove")
+        abort(500, "ERROR 500: User Not Found Can't Remove")
     else:
         db.session.delete(user)
         db.session.commit()

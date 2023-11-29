@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 
-from flask import Flask, Blueprint, render_template, request, url_for, flash, redirect, jsonify
+from flask import Flask, Blueprint, render_template, request, url_for, flash, redirect, jsonify, abort
 from flask_login import login_required, current_user
 from models import UserRole
 from models import Event
@@ -163,10 +163,14 @@ def delete_event_route(event_id):
 @home.route('/users', methods=['GET'])
 @login_required
 def users_page():
-    current_page = 'Users'
-    all_users = userRepo.get_all_users()
-    all_roles = userRepo.get_roles_values()
-    return render_template('home/users.html', users=all_users, roles=all_roles, current_page=current_page)
+    if current_user.role.value == "Coordinator":
+        current_page = 'Users'
+        all_users = userRepo.get_all_users()
+        all_roles = userRepo.get_roles_values()
+        return render_template('home/users.html', users=all_users, roles=all_roles, current_page=current_page)
+    else:
+        abort(403, "ERROR 403: Current users does not have required access level")
+
 
 
 @home.route('/change-role/<int:user_id>', methods=['POST'])
