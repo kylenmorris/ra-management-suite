@@ -118,7 +118,7 @@
                 function toggleEventTypeEdit() {
                     var checkbox = document.getElementById('editEventType');
                     var hiddenInput = document.getElementById('editEventTypeHidden');
-                    // If the checkbox is checked, disable the hidden input so it doesn't submit
+                    // If the checkbox is checked, disable the hidden input, so it doesn't submit
                     hiddenInput.disabled = checkbox.checked;
                 }
             </script>
@@ -156,7 +156,7 @@
 <div id='calendar'></div>
 
 <script>
-    // we have to do this shit cause the .toISOString() method converts a date to a string using
+    // we have to do this cause the .toISOString() method converts a date to a string using
     // the UTC timezone, not the local timezone i.e. it ignores out timezone and does UTC
     // Extract hours, minutes, and seconds from the Date object
     function formatToLocalISOString(date) {
@@ -166,9 +166,9 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        let currentUserId = {{ current_user.id }};
+        {#let currentUserId = {{ current_user.id }};#}
 
-        var calendarEl = document.getElementById('event');
+        var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             timeZone: 'local',
             initialView: 'dayGridMonth',
@@ -179,6 +179,7 @@
                 minute: '2-digit',
                 meridiem: 'short'
             },
+
             dateClick: function(info) {
                 $('#eventModal').modal('show');
                 document.getElementById('start_date').value = info.dateStr + "T12:00";  // Set to noon
@@ -197,24 +198,25 @@
                 document.getElementById('editEventStartDate').value = formatToLocalISOString(startTime).slice(0, 16);
                 document.getElementById('editEventEndDate').value = endTime ? formatToLocalISOString(endTime).slice(0, 16) : '';
                 document.getElementById('editColor').value = info.event.backgroundColor;
+
                 // Check if the 'Duty Shift' checkbox exists
                 var editEventTypeCheckbox = document.getElementById('editEventType');
                 if (editEventTypeCheckbox) {
                     editEventTypeCheckbox.checked = info.event.extendedProps.event_type === 'duty shift';
                 }
+
                 // Check if the assigned user select box exists
                 var assignedUserSelect = document.getElementById('editAssignedUserId');
                 if (assignedUserSelect) {
                     var assignedUserId = info.event.extendedProps.assigned_user_id;
                     for (var i = 0; i < assignedUserSelect.options.length; i++) {
-                        if (assignedUserSelect.options[i].value == assignedUserId) {
+                        if (assignedUserSelect.options[i].value === assignedUserId) {
                             assignedUserSelect.selectedIndex = i;
                             break;
                         }
                         assignedUserSelect.selectedIndex = 0;
                     }
                 }
-
 
                 if (isOwner) {
                     // If the user is the owner, make the fields editable and show the Save Changes button
@@ -226,19 +228,18 @@
                     document.getElementById('saveChangesButton').style.display = 'block';
                     document.getElementById('deleteEventButton').style.display = 'block';
                     document.getElementById('editEventId').value = info.event.id;
-
-                } else {
+                }
+                else {
                     // Otherwise, make the fields readonly and hide the Save Changes button
                     document.getElementById('saveChangesButton').style.display = 'none';
                     document.getElementById('deleteEventButton').style.display = 'none';
-
                 }
 
-                 var editEventTypeCheckbox = document.getElementById('editEventType');
+                {#var editEventTypeCheckbox = document.getElementById('editEventType');#}
                 if (editEventTypeCheckbox) {
                     editEventTypeCheckbox.disabled = !isOwner;
                 }
-                var assignedUserSelect = document.getElementById('editAssignedUserId');
+                {#var assignedUserSelect = document.getElementById('editAssignedUserId');#}
                 if (assignedUserSelect) {
                     assignedUserSelect.disabled = !isOwner;
                 }

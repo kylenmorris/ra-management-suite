@@ -42,7 +42,7 @@ def index():
             update_event(event_id, title, start_date, end_date, color, description, event_type, assigned_user_id)
         else:
             create_event(title, start_date, end_date, current_user.id, color, description, event_type, assigned_user_id)
-        return redirect(url_for('home.events'))
+        return redirect(url_for('event.index'))
 
     events = get_all_events()
     users = User.query.all()
@@ -85,9 +85,9 @@ def get_events():
     return jsonify(events_data)
 
 
-@event.route('/delete-event/<int:event_id>', methods=['POST'])
+@event.route('/delete/<int:event_id>', methods=['POST'])
 @login_required
-def delete_event_route(event_id):
+def delete(event_id):
     event = Event.query.get(event_id)
     if event and event.owner_id == current_user.id:  # ensure the current user is the owner
         delete_event(event_id)
@@ -95,7 +95,7 @@ def delete_event_route(event_id):
     return jsonify(success=False, message="Event not found or you don't have the permission to delete it")
 
 
-@event.app_template_filter('formatdatetime')
+@event.app_template_filter('format-datetime')
 def format_datetime_filter(value, format="%a %b %-d, %-I%p"):
     if value is None:
         return ""
