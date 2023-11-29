@@ -3,16 +3,39 @@
 {% block content %}
     <style>
         h1 {
-            color: royalblue;
             background: lightblue;
             border-radius: 15px;
             padding: 15px;
             width: 736px;
         }
-        hr {
-            width: 32%;
+        .announcement_container {
+            float: left; /* float announcements to the left */
+            width: 50%; /* take up half of the width */
+            overflow: auto;
+        }
+        .task_container {
+            float: right; /* float tasks to the right */
+            width: 50%; /* take up half of the width */
+            overflow: auto;
+        }
+        .announcement_hr {
+            /*width: 32%;
             position: relative;
-            left: -380px;
+            left: -380px;*/
+            width: 80%;
+            margin-left: 0;
+        }
+        .task_hr {
+            /*width: 32%;
+            float: right;*/
+            width: 80%;
+            margin-left: 0;
+            margin-top: -10px;
+        }
+        h6 {
+            /*position: relative;
+            left: -125px;*/
+            margin-left: 0;
         }
         a {
             display: block;
@@ -22,19 +45,55 @@
             width: 360px;
             word-wrap: break-word;
         }
+        h5 {
+            float: left;
+            width: 360px;
+            word-wrap: break-word;
+        }
+        .task_item {
+            overflow: hidden;
+        }
+        .task_details {
+            margin-top: 10px; /* Adjust the margin as needed */
+        }
+        h2, h4 {
+            display: inline;
+            font-size: 2em;
+        }
+        h4 {
+            float: left;
+        }
+
     </style>
     <h1>{% block title %} Welcome to the RA Management Suite {% endblock %}</h1>
     <br>
-    <h2>{{ 'Recent Announcements:' }}</h2>
-    <br>
-    {% for announcement in announcements[-5:] %}
-        <a href="{{ url_for('home.announcement', announcement_id=announcement['id']) }}">
-            <h3>{{ announcement['title'] }}</h3>
-        </a>
-        <span class="badge badge-primary">{{ announcement['created'] }}</span>
-            <a href="{{ url_for('home.edit', announcement_id=announcement['id']) }}">
-            <span class="badge badge-warning">Edit</span>
-        </a>
-        <hr>
-    {% endfor %}
+    <div class="announcement_container">
+        <h2>{{ 'Recent Announcements:' }}</h2>
+        <br>
+        <br>
+        {% for announcement in announcements[-5:]|reverse %}
+            <a href="{{ url_for('home.announcement', announcement_id=announcement['id']) }}">
+                <h3>{{ announcement['title'] }}</h3>
+            </a>
+            <span class="badge badge-primary">{{ announcement['created'] }}</span>
+            <p class="mr-2 mb-0">{{ announcement.user.name }}</p>
+            <hr class="announcement_hr">
+        {% endfor %}
+    </div>
+    <div class="task_container">
+        <h4>{{ 'High Priority Tasks:' }}</h4>
+        <br>
+        <br>
+        <br>
+        {% for task in tasks if task.priority == TaskPriority.HIGH %}
+            <div class="task_item">
+                <h3>{{ task.title }}</h3>
+                <div class="task_details">
+                    <p>{{ task.deadline|formatdatetime }}</p>
+                    <hr class="task_hr">
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
 {% endblock %}
