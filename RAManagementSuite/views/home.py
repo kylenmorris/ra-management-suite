@@ -5,7 +5,8 @@ from flask import Flask, Blueprint, render_template, request, url_for, flash, re
 from flask_login import login_required, current_user
 from models import UserRole
 from models import Event
-from repos import announcementRepo
+from datetime import datetime, timedelta
+from repos import announcementRepo, signupCodeRepo
 from repos.eventRepo import create_event, get_all_events, update_event, delete_event
 from repos import userRepo
 
@@ -31,6 +32,7 @@ def announcement_page():
     current_page = 'announcement_page'
     announcements = announcementRepo.get_announcements()
     return render_template('home/announcement.html', announcements=announcements, current_page=current_page, UserRole=UserRole)
+
 
 @home.route('/view/<int:announcement_id>')
 def announcement(announcement_id):
@@ -160,17 +162,32 @@ def delete_event_route(event_id):
     return jsonify(success=False, message="Event not found or you don't have the permission to delete it")
 
 
-@home.route('/users', methods=['GET'])
+@home.route('/users', methods=['GET', 'POST'])
 @login_required
 def users_page():
     if current_user.role.value == "Coordinator":
         current_page = 'Users'
         all_users = userRepo.get_all_users()
         all_roles = userRepo.get_roles_values()
-        return render_template('home/users.html', users=all_users, roles=all_roles, current_page=current_page)
+
+        if request.method == 'POST':
+            signupCodeRepo.create_signup_code()
+
+        current_page = 'Users'
+        all_users = userRepo.get_all_users()
+        all_roles = userRepo.get_roles_values()
+        all_codes = signupCodeRepo.get_signup_codes()
+
+        # it is irritatingly hard to do this through the db so just populate it on the get
+        for code in all_codes:
+            code.formatted_created = code.created.strftime('%b %d, %Y')
+            code.formatted_expires = (code.created + timedelta(days=7)).strftime('%b %d, %Y') # week after creation
+
+        return render_template('home/users.html', users=all_users, roles=all_roles, codes=all_codes,
+                            current_page=current_page, UserRole=UserRole)
+
     else:
         abort(403, "ERROR 403: Current users does not have required access level")
-
 
 
 @home.route('/change-role/<int:user_id>', methods=['POST'])
@@ -186,7 +203,21 @@ def change_role(user_id):
 def delete_user(user_id):
     userRepo.delete_user(user_id)
     return redirect(url_for('home.users_page'))
-    
+
+
+@home.route('/create-', methods=['POST'])
+@login_required
+def create_signup_code():
+    signupCodeRepo.create_signup_code()
+    return redirect(url_for('home.users_page'))
+
+
+@home.route('/delete-code/<int:code_id>', methods=['POST'])
+@login_required
+def delete_code(code_id):
+    signupCodeRepo.delete_signup_code(code_id)
+    return redirect(url_for('home.users_page'))
+
 
 @home.route('/tasks/create', methods=['GET', 'POST'])
 @login_required

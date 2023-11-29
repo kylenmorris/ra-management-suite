@@ -12,9 +12,9 @@
             <th>Delete User</th>
         </tr>
         </thead>
+
         <tbody>
         {% for user in users %}
-
         <tr class="rows">
             <td class="name">{{user['name']}}</td>
             <td class="email">{{user['email']}}</td>
@@ -48,6 +48,46 @@
         {% endfor %}
         </tbody>
     </table>
+
+    <h1>{% block code_title %} Code Management {% endblock %}</h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Tasks</h2>
+        {% if current_user.role != UserRole.BASIC %}
+            <form method="post">
+            <button type="submit" class="btn btn-primary">Create New Code</button>
+            </form>
+        {% endif %}
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Code</th>
+            <th>Created</th>
+            <th>Expires</th>
+            <th>Used</th>
+            <th>Delete Code</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for code in codes %}
+        <tr class="rows">
+            <td class="name">{{code['code']}}</td>
+            <td class="formatted_created">{{code['formatted_created']}}</td>
+            <td class="formatted_expires">{{code['formatted_expires']}}</td>
+            <td class="used">{{code['used']}}</td>
+            <td class="delete">
+                <form name="delete_form" method="POST" action={{url_for('home.delete_code', code_id=code['id'])}}>
+                    <input type="submit" name="delete" value="Delete" class="delete_button">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
