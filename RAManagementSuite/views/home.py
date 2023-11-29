@@ -161,9 +161,12 @@ def delete_event_route(event_id):
     return jsonify(success=False, message="Event not found or you don't have the permission to delete it")
 
 
-@home.route('/users', methods=['GET'])
+@home.route('/users', methods=['GET', 'POST'])
 @login_required
 def users_page():
+    if request.method == 'POST':
+        signupCodeRepo.create_signup_code()
+
     current_page = 'Users'
     all_users = userRepo.get_all_users()
     all_roles = userRepo.get_roles_values()
@@ -174,7 +177,8 @@ def users_page():
         code.formatted_created = code.created.strftime('%b %d, %Y')
         code.formatted_expires = (code.created + timedelta(days=7)).strftime('%b %d, %Y') # week after creation
 
-    return render_template('home/users.html', users=all_users, roles=all_roles, codes=all_codes, current_page=current_page)
+    return render_template('home/users.html', users=all_users, roles=all_roles, codes=all_codes,
+                           current_page=current_page, UserRole=UserRole)
 
 
 @home.route('/change-role/<int:user_id>', methods=['POST'])
@@ -189,6 +193,13 @@ def change_role(user_id):
 @login_required
 def delete_user(user_id):
     userRepo.delete_user(user_id)
+    return redirect(url_for('home.users_page'))
+
+
+@home.route('/create-', methods=['POST'])
+@login_required
+def create_signup_code():
+    signupCodeRepo.create_signup_code()
     return redirect(url_for('home.users_page'))
 
 

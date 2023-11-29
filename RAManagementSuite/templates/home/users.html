@@ -49,6 +49,17 @@
         </tbody>
     </table>
 
+    <h1>{% block code_title %} Code Management {% endblock %}</h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Tasks</h2>
+        {% if current_user.role != UserRole.BASIC %}
+            <form method="post">
+            <button type="submit" class="btn btn-primary">Create New Code</button>
+            </form>
+        {% endif %}
+    </div>
+
     <table>
         <thead>
         <tr>

@@ -75,7 +75,7 @@ class Event(db.Model):
 
 class SignupCode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.Integer, nullable=False)
+    code = db.Column(db.Integer, nullable=False, unique=True)
     created = db.Column(db.DateTime(timezone=True), default=datetime.now)
     used = db.Column(db.Boolean, nullable=False, default=False)
     formatted_created = db.Column(db.String, nullable=True, default="")
