@@ -59,7 +59,7 @@ def update_task(task_id, title, description, deadline, priority, status, assigne
         # Clear existing relationships
         task.assigned_users.clear()
 
-        # Assign new users
+        # Assign new user
         for user_id in assigned_user_ids:
             user = User.query.get(user_id)
             if user:

@@ -8,8 +8,14 @@ from models import Announcement, SignupCode
 
 from models import User
 from repos import userRepo
+from views.event import event
+from views.profile import profile
+from views.code import code
+from views.task import task
 from views.auth import auth
 from views.home import home
+from views.user import user
+from views.announcement import announcement
 
 from datetime import datetime, timedelta
 
@@ -21,8 +27,8 @@ def initialize_database():
     # Check if the table is empty
     if not Announcement.query.first():
         initial_announcements = [
-            Announcement(title='First Announcement', content='Content for the first announcement.html'),
-            Announcement(title='Second Announcement', content='Content for the second announcement.html')
+            Announcement(title='First Announcement', content='Content for the first index.html'),
+            Announcement(title='Second Announcement', content='Content for the second index.html')
         ]
         for ann in initial_announcements:
             db.session.add(ann)
@@ -71,8 +77,14 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)  # for quickly changing the db
 
-    app.register_blueprint(auth)
-    app.register_blueprint(home)
+    app.register_blueprint(auth, url_prefix='/auth')
+    app.register_blueprint(home, url_prefix='/')
+    app.register_blueprint(task, url_prefix='/task')
+    app.register_blueprint(profile, url_prefix='/profile')
+    app.register_blueprint(announcement, url_prefix='/announcement')
+    app.register_blueprint(code, url_prefix='/code')
+    app.register_blueprint(event, url_prefix='/event')
+    app.register_blueprint(user, url_prefix='/user')
 
     with app.app_context():
         db.create_all()  # this creates all tables based on the models defined

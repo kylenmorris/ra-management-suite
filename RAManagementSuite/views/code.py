@@ -16,14 +16,23 @@ from repos.eventRepo import create_event, get_all_events, update_event, delete_e
 
 # from RAManagementSuite.repos.taskRepo import create_task, get_all_tasks, get_task_by_id, update_task
 
-home = Blueprint('home', __name__)
+code = Blueprint('code', __name__)
 
 
-@home.route('/')
-def index():
-    current_page = 'home'
-    announcements = announcementRepo.get_announcements()
-    tasks = taskRepo.get_tasks_by_user(current_user.id)
-    return render_template('home/index.html', announcements=announcements, tasks=tasks,
-                           TaskPriority=TaskPriority, current_page=current_page)
+@code.route('/create', methods=['POST'])
+@login_required
+def create():
+    signupCodeRepo.create_signup_code()
+    return redirect(url_for('user.index'))
 
+
+@code.route('/delete/<int:code_id>', methods=['POST'])
+@login_required
+def delete(code_id):
+    signupCodeRepo.delete_signup_code(code_id)
+    return redirect(url_for('user.index'))
+
+
+# for code in all_codes:
+#     code.formatted_created = code.created.strftime('%b %d, %Y')
+#     code.formatted_expires = (code.created + timedelta(days=7)).strftime('%b %d, %Y')  # week after creation

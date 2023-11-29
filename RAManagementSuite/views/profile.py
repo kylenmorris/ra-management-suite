@@ -16,14 +16,12 @@ from repos.eventRepo import create_event, get_all_events, update_event, delete_e
 
 # from RAManagementSuite.repos.taskRepo import create_task, get_all_tasks, get_task_by_id, update_task
 
-home = Blueprint('home', __name__)
+profile = Blueprint('profile', __name__)
 
 
-@home.route('/')
+@profile.route('/')
+@login_required
 def index():
-    current_page = 'home'
-    announcements = announcementRepo.get_announcements()
-    tasks = taskRepo.get_tasks_by_user(current_user.id)
-    return render_template('home/index.html', announcements=announcements, tasks=tasks,
-                           TaskPriority=TaskPriority, current_page=current_page)
+    current_page = 'Profile'
+    return render_template('profile/index.html', name=current_user.name, current_page=current_page)
 

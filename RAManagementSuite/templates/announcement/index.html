@@ -3,12 +3,12 @@
 {% block content %}
 <div class="d-flex align-items-center">
     <h1 style="margin-right: 20px;">{% block title %} Announcements {% endblock %}</h1>
-    <a href="{{ url_for('home.create') }}" class="btn btn-outline-primary">New</a>
+    <a href="{{ url_for('announcement.create') }}" class="btn btn-outline-primary">New</a>
 </div>
 
 {% for announcement in announcements|reverse %}
     <div class="announcement-item">
-        <a href="{{ url_for('home.announcement', announcement_id=announcement['id']) }}">
+        <a href="{{ url_for('announcement.view', announcement_id=announcement['id']) }}">
             <h2>{{ announcement['title'] }}</h2>
         </a>
         <span class="badge badge-primary">{{ announcement['created']}}</span>
@@ -17,7 +17,7 @@
             <div class="user-info d-flex align-items-center">
                 <p class="mr-2 mb-0">{{ announcement.user.name }}</p>
                 {% if current_user.is_authenticated and (current_user.id == announcement.user.id or current_user.role == UserRole.COORDINATOR) %}
-                <a href="{{ url_for('home.edit', announcement_id=announcement['id']) }}" class="badge badge-warning">Edit</a>
+                <a href="{{ url_for('announcement.edit', announcement_id=announcement['id']) }}" class="badge badge-warning">Edit</a>
                 <a href="#" class="badge badge-danger" data-toggle="modal" data-target="#deleteModal-{{ announcement['id'] }}">Delete</a>
                 {% endif %}
 
@@ -36,7 +36,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <a href="{{ url_for('home.delete_announcement', announcement_id=announcement['id']) }}" class="btn btn-danger">Delete</a>
+                            <a href="{{ url_for('announcement.delete', announcement_id=announcement['id']) }}" class="btn btn-danger">Delete</a>
                         </div>
                     </div>
                 </div>

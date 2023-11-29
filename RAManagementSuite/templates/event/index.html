@@ -25,7 +25,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form method="post" action="{{ url_for('home.events') }}" id="eventForm">
+        <form method="post" action="{{ url_for('event.index') }}" id="eventForm">
             <label for="title">Event Title:</label>
             <input type="text" id="title" name="title" required><br><br>
 
@@ -93,7 +93,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form method="post" action="{{ url_for('home.events') }}" id="editEventForm">
+        <form method="post" action="{{ url_for('event.index') }}" id="editEventForm">
             <input type="hidden" id="editEventId" name="event_id">
 
             <label for="editEventTitle">Event Title:</label>
@@ -152,7 +152,7 @@
   </div>
 </div>
 
-<!-- Your calendar container -->
+<!-- Your event container -->
 <div id='calendar'></div>
 
 <script>
@@ -168,7 +168,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         let currentUserId = {{ current_user.id }};
 
-        var calendarEl = document.getElementById('calendar');
+        var calendarEl = document.getElementById('event');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             timeZone: 'local',
             initialView: 'dayGridMonth',
@@ -312,7 +312,7 @@
         });
 
         function fetchEvents(eventType) {
-            // Modify the calendar's event source to filter based on event type
+            // Modify the event's event source to filter based on event type
             calendar.getEventSources().forEach(function(source) {
                 source.remove();
             });

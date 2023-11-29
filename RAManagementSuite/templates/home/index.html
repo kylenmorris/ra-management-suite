@@ -72,7 +72,7 @@
         <br>
         <br>
         {% for announcement in announcements[-5:]|reverse %}
-            <a href="{{ url_for('home.announcement', announcement_id=announcement['id']) }}">
+            <a href="{{ url_for('announcement.view', announcement_id=announcement['id']) }}">
                 <h3>{{ announcement['title'] }}</h3>
             </a>
             <span class="badge badge-primary">{{ announcement['created'] }}</span>

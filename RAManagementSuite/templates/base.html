@@ -33,21 +33,21 @@
                 <li class="nav-item {% if current_page == 'home' %}active{% endif %}">
                     <a class="nav-link" href="{{ url_for('home.index')}}">Home</a>
                 </li>
-                <li class="nav-item {% if current_page == 'announcement_page' %}active{% endif %}">
-                    <a class="nav-link" href="{{ url_for('home.announcement_page')}}">Announcements</a>
+                <li class="nav-item {% if current_page == 'index' %}active{% endif %}">
+                    <a class="nav-link" href="{{ url_for('announcement.index')}}">Announcements</a>
                 </li>
                 <li class="nav-item {% if current_page == 'Profile' %}active{% endif %}">
-                    <a class="nav-link" href="{{ url_for('home.profile')}}">Profile</a>
+                    <a class="nav-link" href="{{ url_for('profile.index')}}">Profile</a>
                 </li>
                 <li class="nav-item {% if current_page == 'Tasks' %}active{% endif %}">
-                    <a class="nav-link" href="{{ url_for('home.tasks')}}">Tasks</a>
+                    <a class="nav-link" href="{{ url_for('task.index')}}">Tasks</a>
                 </li>
                 <li class="nav-item {% if current_page == 'Calendar' %}active{% endif %}">
-                    <a class="nav-link" href="{{ url_for('home.events')}}">Calendar</a>
+                    <a class="nav-link" href="{{ url_for('event.index')}}">Calendar</a>
                 </li>
                 {% if current_user.role.value == "Coordinator" %}
                 <li class="nav-item {% if current_page == 'Users' %}active{% endif %}">
-                    <a class="nav-link" href="{{ url_for('home.users_page')}}">Users</a>
+                    <a class="nav-link" href="{{ url_for('user.index')}}">Users</a>
                 </li>
                 {% endif %}
                 {% endif %}

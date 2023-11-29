@@ -24,7 +24,7 @@ def login():
         login_user(user, remember=remember)
         return redirect(url_for('home.profile'))  # or wherever you want to redirect after a successful login
 
-    return render_template('home/login.html')
+    return render_template('auth/login.html')
 
 
 @auth.route('/signup', methods=['GET', 'POST'])
@@ -63,11 +63,11 @@ def signup():
 
         return redirect(url_for('auth.login'))
 
-    return render_template('home/signup.html')
+    return render_template('auth/signup.html')
 
 
 @auth.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return render_template('home/logout.html')
+    return render_template('auth/logout.html')
