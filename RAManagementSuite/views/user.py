@@ -22,7 +22,9 @@ user = Blueprint('user', __name__)
 @user.route('/')
 @login_required
 def index():
-    if current_user.role.value == "Coordinator":
+    if current_user.role.value != "Coordinator":
+        abort(403, "ERROR 403: Current users does not have required access level")
+    else:
         current_page = 'Users'
         all_users = userRepo.get_all_users()
         all_roles = userRepo.get_roles_values()
@@ -36,22 +38,22 @@ def index():
         return render_template('user/index.html', users=all_users, roles=all_roles,
                                current_page=current_page, UserRole=UserRole)
 
-    else:
-        abort(403, "ERROR 403: Current user does not have required access level")
-
 
 @user.route('/change-role/<int:user_id>', methods=['POST'])
 @login_required
 def change_role(user_id):
-    new_role = request.form.get('role')
-    userRepo.change_user_role(user_id, new_role)
-    return redirect(url_for('user.index'))
-
+    if current_user.role.value != "Coordinator":
+        abort(403, "ERROR 403: Current users does not have required access level")
+    else:
+        new_role = request.form.get('role')
+        userRepo.change_user_role(user_id, new_role)
+        return redirect(url_for('home.users_page'))
 
 @user.route('/delete/<int:user_id>', methods=['POST'])
 @login_required
 def delete(user_id):
-    userRepo.delete_user(user_id)
-    return redirect(url_for('user.index'))
-
-
+    if current_user.role.value != "Coordinator":
+        abort(403, "ERROR 403: Current users does not have required access level")
+    else:
+        userRepo.delete_user(user_id)
+        return redirect(url_for('home.users_page'))

@@ -26,4 +26,3 @@ def index():
     tasks = taskRepo.get_tasks_by_user(current_user.id)
     return render_template('home/index.html', announcements=announcements, tasks=tasks,
                            TaskPriority=TaskPriority, current_page=current_page)
-
