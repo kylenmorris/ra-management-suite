@@ -59,7 +59,7 @@ def signup():
         userRepo.create_user(email, name, password)
 
         # mark the code as used
-        signupCodeRepo.edit_signup_code(signup_code.id, True)
+        signupCodeRepo.update_signup_code(signup_code.id, True)
 
         return redirect(url_for('auth.login'))
 

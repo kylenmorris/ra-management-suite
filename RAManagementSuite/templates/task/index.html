@@ -30,7 +30,7 @@
             </div>
             <div class="modal-body">
                 <p><strong>Description:</strong> {{ task.description }}</p>
-                <p><strong>Deadline:</strong> {{ task.deadline|formatdatetime }}</p>
+                <p><strong>Deadline:</strong> {{ task.deadline|format-datetime }}</p>
                 <p>
                     <strong>Priority:</strong>
                     <span class="priority-box" style="background-color: {{ task.priority.value }}; color: white; padding: 3px 6px; border-radius: 4px;">
@@ -81,7 +81,7 @@
         <tr>
             <td>{{ task.title }}</td>
             <td>{{ task.description|truncate(40, true, '...') }}</td>
-            <td>{{ task.deadline|formatdatetime }}</td>
+            <td>{{ task.deadline|format-datetime }}</td>
             <td>
                 <span class="priority-box" style="background-color: {{ task.priority.value }}; color: white; padding: 3px 6px; border-radius: 4px;">
                     {{ task.priority.name }}

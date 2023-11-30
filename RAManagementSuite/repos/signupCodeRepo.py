@@ -28,7 +28,7 @@ def create_signup_code():
     db.session.commit()
 
 
-def edit_signup_code(id, used):
+def update_signup_code(id, used):
     code = SignupCode.query.filter_by(id=id).first()
     if code:
         code.used = used
@@ -48,8 +48,3 @@ def delete_signup_code(id):
         print(f"An error occurred: {str(e)}")
         db.session.rollback()
         return False  # Return a failure indicator
-
-
-
-
-
