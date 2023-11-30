@@ -16,7 +16,11 @@
         <tbody>
         {% for user in users %}
         <tr class="rows">
-            <td class="name">{{user['name']}}</td>
+            <td class="name">
+                <a href="{{ url_for('home.view_profile', user_id=user['id']) }}">
+                {{user['name']}}
+                </a>
+            </td>
             <td class="email">{{user['email']}}</td>
             {% if current_user.id != user['id'] %}
             <td class="role">

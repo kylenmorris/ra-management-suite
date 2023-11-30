@@ -1,4 +1,4 @@
-from models import User, UserRole
+from models import User, UserRole, Profile
 from extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.exceptions import abort
@@ -48,4 +48,26 @@ def delete_user(user_id):
         abort(500, "ERROR 500: User Not Found Can't Remove")
     else:
         db.session.delete(user)
+        db.session.commit()
+
+
+def get_user_profile(user_id):
+    return Profile.query.filter_by(user_id=user_id).first()
+
+
+def update_user_profile(user_id, name, phone_number, gender, pronouns, availability):
+    profile = Profile.query.filter_by(user_id=user_id).first()
+    user = User.query.filter_by(id=user_id).first()
+    if profile:
+        profile.phone_number = phone_number
+        profile.gender = gender
+        profile.pronouns = pronouns
+        profile.availability = availability
+        user.name = name
+        db.session.commit()
+    else:
+        # Create a new profile if it doesn't exist
+        new_profile = Profile(user_id=user_id, phone_number=phone_number, gender=gender, pronouns=pronouns,
+                              availability=availability)
+        db.session.add(new_profile)
         db.session.commit()

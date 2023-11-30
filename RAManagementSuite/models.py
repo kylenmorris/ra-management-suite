@@ -64,7 +64,7 @@ class Event(db.Model):
     start_date = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.now)
     end_date = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.now)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    owner = db.relationship('User',foreign_keys=[owner_id], backref=db.backref('events', lazy='dynamic'))
+    owner = db.relationship('User', foreign_keys=[owner_id], backref=db.backref('events', lazy='dynamic'))
     color = db.Column(db.String(7), default="#007BFF")
     description = db.Column(db.Text, nullable=True)
     event_type = db.Column(db.Enum(EventType), default=EventType.NORMAL, nullable=False)
@@ -93,3 +93,13 @@ class Task(db.Model):
     creator = db.relationship('User', backref=db.backref('created_tasks', lazy='dynamic'))
     assigned_users = db.relationship('User', secondary='task_assignments',
                                      backref=db.backref('assigned_tasks', lazy='dynamic'))
+
+
+class Profile(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    phone_number = db.Column(db.Integer, nullable=True)
+    gender = db.Column(db.Text, nullable=True)
+    pronouns = db.Column(db.Text, nullable=True)
+    availability = db.Column(db.Text, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User', backref=db.backref('profile_info', lazy=True))

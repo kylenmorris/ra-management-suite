@@ -52,12 +52,12 @@ def initialize_database():
 
     if not userRepo.get_user_by_email("returner@test.com"):
         hashed_password = generate_password_hash("password")
-        db.session.add(User(name="admin", email="returner@test.com", password=hashed_password, role="RETURNER"))
+        db.session.add(User(name="returner", email="returner@test.com", password=hashed_password, role="RETURNER"))
         db.session.commit()
 
     if not userRepo.get_user_by_email("basic@test.com"):
         hashed_password = generate_password_hash("password")
-        db.session.add(User(name="admin", email="basic@test.com", password=hashed_password, role="BASIC"))
+        db.session.add(User(name="basic", email="basic@test.com", password=hashed_password, role="BASIC"))
         db.session.commit()
 
 

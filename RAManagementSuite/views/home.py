@@ -14,12 +14,15 @@ from models import Event, UserRole, TaskPriority, User, TaskStatus, EventType
 from repos import announcementRepo, taskRepo
 from repos.eventRepo import create_event, get_all_events, update_event, delete_event
 
+from RAManagementSuite.repos.userRepo import update_user_profile, get_user_profile, get_user_by_id
+
 # from RAManagementSuite.repos.taskRepo import create_task, get_all_tasks, get_task_by_id, update_task
 
 home = Blueprint('home', __name__)
 
 
 @home.route('/')
+@login_required
 def index():
     current_page = 'home'
     announcements = announcementRepo.get_announcements()
@@ -28,6 +31,7 @@ def index():
 
 
 @home.route('/announcement')
+@login_required
 def announcement_page():
     current_page = 'announcement_page'
     announcements = announcementRepo.get_announcements()
@@ -35,6 +39,7 @@ def announcement_page():
 
 
 @home.route('/view/<int:announcement_id>')
+@login_required
 def announcement(announcement_id):
     current_page = 'announcement_page'
     announcement = announcementRepo.get_announcement(announcement_id)
@@ -42,6 +47,7 @@ def announcement(announcement_id):
 
 
 @home.route('/create', methods=('GET', 'POST'))
+@login_required
 def create():
     current_page = 'announcement_page'
     if request.method == 'POST':
@@ -57,6 +63,7 @@ def create():
 
 
 @home.route('/edit/<int:announcement_id>/', methods=('GET', 'POST'))
+@login_required
 def edit(announcement_id):
     current_page = 'announcement_page'
     announcement = announcementRepo.get_announcement(announcement_id)
@@ -74,16 +81,37 @@ def edit(announcement_id):
 
 
 @home.route('/delete/<int:announcement_id>/')
+@login_required
 def delete_announcement(announcement_id):
     announcementRepo.del_announcement(announcement_id)
     return redirect(url_for('home.announcement_page'))
 
 
-@home.route('/profile')
+@home.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     current_page = 'Profile'
-    return render_template('home/profile.html', name=current_user.name, current_page=current_page)
+
+    if request.method == 'POST':
+        # Extract data from form and update the profile
+        name = request.form.get('name')
+        phone_number = request.form.get('phone_number')
+        gender = request.form.get('gender')
+        pronouns = request.form.get('pronouns')
+        availability = request.form.get('availability')
+        update_user_profile(current_user.id, name, phone_number, gender, pronouns, availability)
+
+    user_profile = get_user_profile(current_user.id)
+    return render_template('home/profile.html', user=current_user, profile=user_profile, current_page=current_page)
+
+
+@home.route('/profile/<int:user_id>')
+@login_required
+def view_profile(user_id):
+    current_page = 'Profile'
+    user = get_user_by_id(user_id)
+    profile = get_user_profile(user_id)
+    return render_template('home/profile.html', profile=profile,  current_page=current_page, user=user)
 
 
 @home.route('/events', methods=['GET', 'POST'])
@@ -323,6 +351,7 @@ def update_task_status_route(task_id):
 
 
 @home.app_template_filter('formatdatetime')
+@login_required
 def format_datetime_filter(value, format="%a %b %-d, %-I%p"):
     if value is None:
         return ""
