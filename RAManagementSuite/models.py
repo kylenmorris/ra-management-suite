@@ -63,7 +63,7 @@ class Event(db.Model):
     title = db.Column(db.String(120), nullable=False)
     start_date = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.now)
     end_date = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.now)
-    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, default=1)
     owner = db.relationship('User',foreign_keys=[owner_id], backref=db.backref('events', lazy='dynamic'))
     color = db.Column(db.String(7), default="#007BFF")
     description = db.Column(db.Text, nullable=True)

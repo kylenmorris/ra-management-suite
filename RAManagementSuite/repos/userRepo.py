@@ -15,9 +15,6 @@ def create_user(email, name, password):
     db.session.commit()
 
 
-# Additional user operations can go here...
-
-
 def get_all_users():
     return User.query.all()
 

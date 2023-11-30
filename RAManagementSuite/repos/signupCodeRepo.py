@@ -18,6 +18,7 @@ def create_signup_code():
     # we need a new code that's unique
     # Try creating new ones until we get one that doesn't exist
     while not unique:
+        # since we store as int it's just easier to limit the first digit to 1
         new_code = randint(100000, 999999)
         existing_code = get_signup_code(new_code)
         if not existing_code:
