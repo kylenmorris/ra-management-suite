@@ -72,7 +72,7 @@ def create_app():
 
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + DB_PATH
-    #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/server_db'
+    # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/server_db'
 
     db.init_app(app)
     migrate.init_app(app, db)  # for quickly changing the db
