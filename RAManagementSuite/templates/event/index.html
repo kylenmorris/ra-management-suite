@@ -4,8 +4,8 @@
 
 {% block content %}
 <!-- Adding FullCalendar's CSS and JS -->
-<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.css' />
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.css' />
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 
 
 <!-- toggle for events and duty shifts -->
@@ -239,7 +239,7 @@
                 if (editEventTypeCheckbox) {
                     editEventTypeCheckbox.disabled = !isOwner;
                 }
-                {#var assignedUserSelect = document.getElementById('editAssignedUserId');#}
+                {#var assignedUserSelect = document.getElementById('editAs6signedUserId');#}
                 if (assignedUserSelect) {
                     assignedUserSelect.disabled = !isOwner;
                 }
@@ -318,7 +318,7 @@
                 source.remove();
             });
             calendar.addEventSource({
-                url: `/api/events?event_type=${eventType}`,
+                url: `/event/api/events?event_type=${eventType}`,
                 method: 'GET'
             });
     }
