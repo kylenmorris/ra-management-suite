@@ -13,7 +13,7 @@
         <h3>Login</h3>
         <div class="card">
             <div class="card-body">
-                <form method="POST" action="/login">
+                <form method="POST" action="{{ url_for('auth.login') }}">
                     <div class="form-group">
                         <input class="form-control" type="email" name="email" placeholder="Your Email">
                     </div>
@@ -24,7 +24,7 @@
                         <input type="checkbox" class="form-check-input" name="remember">
                         <label class="form-check-label" for="remember">Remember me</label>
                     </div>
-                    <button class="btn btn-primary btn-block">Login</button>
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
                 </form>
             </div>
         </div>

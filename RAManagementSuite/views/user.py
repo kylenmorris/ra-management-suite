@@ -47,7 +47,7 @@ def change_role(user_id):
     else:
         new_role = request.form.get('role')
         userRepo.change_user_role(user_id, new_role)
-        return redirect(url_for('home.users_page'))
+        return redirect(url_for('user.index'))
 
 @user.route('/delete/<int:user_id>', methods=['POST'])
 @login_required
@@ -56,4 +56,4 @@ def delete(user_id):
         abort(403, "ERROR 403: Current users does not have required access level")
     else:
         userRepo.delete_user(user_id)
-        return redirect(url_for('home.users_page'))
+        return redirect(url_for('user.index'))

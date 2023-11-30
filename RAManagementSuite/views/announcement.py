@@ -23,6 +23,10 @@ def view(announcement_id):
 
 @announcement.route('/create', methods=('GET', 'POST'))
 def create():
+    if current_user.role == UserRole.BASIC:
+        flash('You do not have permission to create announcements.')
+        return redirect(url_for('announcement.index'))
+
     current_page = 'create'
     if request.method == 'POST':
         title = request.form['title']
@@ -38,6 +42,10 @@ def create():
 
 @announcement.route('/edit/<int:announcement_id>/', methods=('GET', 'POST'))
 def edit(announcement_id):
+    if current_user.role == UserRole.BASIC:
+        flash('You do not have permission to create announcement.')
+        return redirect(url_for('announcement.index'))
+
     current_page = 'edit'
     announcement = announcementRepo.get_announcement(announcement_id)
 
@@ -55,6 +63,10 @@ def edit(announcement_id):
 
 @announcement.route('/delete/<int:announcement_id>/')
 def delete(announcement_id):
+    if current_user.role == UserRole.BASIC:
+        flash('You do not have permission to create announcements.')
+        return redirect(url_for('announcement.index'))
+
     announcementRepo.del_announcement(announcement_id)
     return redirect(url_for('home.index'))
 

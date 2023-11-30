@@ -95,7 +95,7 @@ def delete(event_id):
     return jsonify(success=False, message="Event not found or you don't have the permission to delete it")
 
 
-@event.app_template_filter('format-datetime')
+@event.app_template_filter('formatdatetime')
 def format_datetime_filter(value, format="%a %b %-d, %-I%p"):
     if value is None:
         return ""

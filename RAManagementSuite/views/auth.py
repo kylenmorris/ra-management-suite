@@ -22,7 +22,7 @@ def login():
             return redirect(url_for('auth.login'))
 
         login_user(user, remember=remember)
-        return redirect(url_for('home.profile'))  # or wherever you want to redirect after a successful login
+        return redirect(url_for('home.index'))  # or wherever you want to redirect after a successful login
 
     return render_template('auth/login.html')
 

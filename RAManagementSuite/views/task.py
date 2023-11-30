@@ -52,7 +52,7 @@ def create():
         taskRepo.create_task(title, description, deadline, TaskPriority[priority.upper()],
                              current_user.id, assigned_user_ids)
         flash('Task created successfully!')
-        return redirect(url_for('home.tasks'))
+        return redirect(url_for('task.index'))
 
     users = User.query.all()
     return render_template('task/create.html', users=users, current_page=current_page)
@@ -65,7 +65,7 @@ def edit(task_id):
     # Check if the user has permission to edit tasks
     if current_user.role == UserRole.BASIC:
         flash('You do not have permission to edit tasks.')
-        return redirect(url_for('home.tasks'))
+        return redirect(url_for('task.index'))
 
     task = taskRepo.get_task_by_id(task_id)
 
@@ -80,7 +80,7 @@ def edit(task_id):
         taskRepo.update_task(task_id, title, description, deadline, TaskPriority[priority.upper()],
                              TaskStatus[status.upper()], assigned_user_ids)
         flash('Task updated successfully!')
-        return redirect(url_for('home.tasks'))
+        return redirect(url_for('task.index'))
 
     users = User.query.all()
     return render_template('task/edit.html', task=task, users=users, current_page=current_page)
@@ -92,14 +92,14 @@ def delete(task_id):
     # Check if the user has permission to delete tasks
     if current_user.role == UserRole.BASIC:
         flash('You do not have permission to delete tasks.')
-        return redirect(url_for('home.tasks'))
+        return redirect(url_for('task.index'))
 
     try:
         taskRepo.delete_task(task_id)
         flash('Task deleted successfully.')
     except ValueError as e:
         flash(str(e))
-    return redirect(url_for('home.tasks'))
+    return redirect(url_for('task.index'))
 
 
 @task.route('/update_status/<int:task_id>', methods=['POST'])
@@ -107,7 +107,7 @@ def delete(task_id):
 def update_status(task_id):
     if current_user.role != UserRole.BASIC:
         flash('You do not have permission to perform this action.')
-        return redirect(url_for('home.tasks'))
+        return redirect(url_for('task.index'))
 
     new_status = request.form.get('status')
 
@@ -119,4 +119,4 @@ def update_status(task_id):
     except ValueError as e:
         flash(str(e))
 
-    return redirect(url_for('home.tasks'))
+    return redirect(url_for('task.index'))

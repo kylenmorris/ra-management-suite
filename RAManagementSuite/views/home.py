@@ -21,6 +21,8 @@ home = Blueprint('home', __name__)
 
 @home.route('/')
 def index():
+    if current_user.is_anonymous:
+        return redirect(url_for('auth.login'))
     current_page = 'home'
     announcements = announcementRepo.get_announcements()
     tasks = taskRepo.get_tasks_by_user(current_user.id)
