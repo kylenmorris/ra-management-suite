@@ -165,7 +165,9 @@ def delete_event_route(event_id):
 @home.route('/users', methods=['GET', 'POST'])
 @login_required
 def users_page():
-    if current_user.role.value == "Coordinator":
+    if current_user.role.value != "Coordinator":
+        abort(403, "ERROR 403: Current users does not have required access level")
+    else:
         current_page = 'Users'
         all_users = userRepo.get_all_users()
         all_roles = userRepo.get_roles_values()
@@ -186,23 +188,29 @@ def users_page():
         return render_template('home/users.html', users=all_users, roles=all_roles, codes=all_codes,
                             current_page=current_page, UserRole=UserRole)
 
-    else:
-        abort(403, "ERROR 403: Current users does not have required access level")
+
+
 
 
 @home.route('/change-role/<int:user_id>', methods=['POST'])
 @login_required
 def change_role(user_id):
-    new_role = request.form.get('role')
-    userRepo.change_user_role(user_id, new_role)
-    return redirect(url_for('home.users_page'))
+    if current_user.role.value != "Coordinator":
+        abort(403, "ERROR 403: Current users does not have required access level")
+    else:
+        new_role = request.form.get('role')
+        userRepo.change_user_role(user_id, new_role)
+        return redirect(url_for('home.users_page'))
 
 
 @home.route('/delete-user/<int:user_id>', methods=['POST'])
 @login_required
 def delete_user(user_id):
-    userRepo.delete_user(user_id)
-    return redirect(url_for('home.users_page'))
+    if current_user.role.value != "Coordinator":
+        abort(403, "ERROR 403: Current users does not have required access level")
+    else:
+        userRepo.delete_user(user_id)
+        return redirect(url_for('home.users_page'))
 
 
 @home.route('/create-', methods=['POST'])
