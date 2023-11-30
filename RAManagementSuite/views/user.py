@@ -14,8 +14,6 @@ from models import Event, UserRole, TaskPriority, User, TaskStatus, EventType
 from repos import announcementRepo, taskRepo
 from repos.eventRepo import create_event, get_all_events, update_event, delete_event
 
-# from RAManagementSuite.repos.taskRepo import create_task, get_all_tasks, get_task_by_id, update_task
-
 user = Blueprint('user', __name__)
 
 
@@ -28,12 +26,6 @@ def index():
         current_page = 'Users'
         all_users = userRepo.get_all_users()
         all_roles = userRepo.get_roles_values()
-
-        current_page = 'Users'
-        all_users = userRepo.get_all_users()
-        all_roles = userRepo.get_roles_values()
-
-        # it is irritatingly hard to do this through the db so just populate it on the get
 
         return render_template('user/index.html', users=all_users, roles=all_roles,
                                current_page=current_page, UserRole=UserRole)

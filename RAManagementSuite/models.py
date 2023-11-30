@@ -47,7 +47,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(1000))
     role = db.Column(db.Enum(UserRole), default=UserRole.BASIC, nullable=False)
-
+    deleted = db.Column(db.Boolean, nullable=False, default=False)
 
 class Announcement(db.Model):
     id = db.Column(db.Integer, primary_key=True)

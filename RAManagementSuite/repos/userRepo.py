@@ -5,7 +5,8 @@ from werkzeug.exceptions import abort
 
 
 def get_user_by_email(email):
-    return User.query.filter_by(email=email).first()
+    return User.query.filter_by(email=email, deleted=False).first()
+
 
 
 def create_user(email, name, password):
@@ -16,7 +17,7 @@ def create_user(email, name, password):
 
 
 def get_all_users():
-    return User.query.all()
+    return User.query.filter_by(deleted=False)
 
 
 def get_roles_values():
@@ -24,7 +25,7 @@ def get_roles_values():
 
 
 def get_user_by_id(user_id):
-    return User.query.filter_by(id=user_id).first()
+    return User.query.filter_by(id=user_id, deleted=False).first()
 
 
 def change_user_role(user_id, new_role):
@@ -44,5 +45,5 @@ def delete_user(user_id):
     if user is None:
         abort(500, "ERROR 500: User Not Found Can't Remove")
     else:
-        db.session.delete(user)
+        user.deleted = True
         db.session.commit()

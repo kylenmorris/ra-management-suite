@@ -19,6 +19,21 @@ from repos.eventRepo import create_event, get_all_events, update_event, delete_e
 code = Blueprint('code', __name__)
 
 
+@code.route('/')
+@login_required
+def index():
+    if current_user.role.value != "Coordinator":
+        abort(403, "ERROR 403: Current users does not have required access level")
+    else:
+        current_page = 'Codes'
+        all_codes = userRepo.get_all_users()
+
+        # it is irritatingly hard to do this through the db so just populate it on the get
+
+        return render_template('user/index.html', all_codes=all_codes,
+                               current_page=current_page, UserRole=UserRole)
+
+
 @code.route('/create', methods=['POST'])
 @login_required
 def create():
