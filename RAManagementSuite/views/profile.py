@@ -35,13 +35,15 @@ def index():
         update_user_profile(current_user.id, name, phone_number, gender, pronouns, availability)
 
     user_profile = get_user_profile(current_user.id)
-    return render_template('profile/index.html', user=current_user, profile=user_profile, current_page=current_page)
+    return render_template('profile/index.html', current_user=current_user, user=current_user,
+                           profile=user_profile, current_page=current_page)
 
 
 @profile.route('/view/<int:user_id>')
 @login_required
-def view_profile(user_id):
+def view(user_id):
     current_page = 'Profile'
     user = get_user_by_id(user_id)
     profile = get_user_profile(user_id)
-    return render_template('profile/index.html', profile=profile, current_page=current_page, user=user)
+    return render_template('profile/index.html', profile=profile, current_page=current_page,
+                           user=user, current_user=current_user)
