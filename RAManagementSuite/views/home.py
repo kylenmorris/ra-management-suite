@@ -21,6 +21,7 @@ home = Blueprint('home', __name__)
 
 
 @home.route('/')
+@login_required
 def index():
     if current_user.is_anonymous:
         return redirect(url_for('auth.login'))

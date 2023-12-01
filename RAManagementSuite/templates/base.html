@@ -29,30 +29,29 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 {% if current_user.is_authenticated %}
-
-                <li class="nav-item {% if current_page == 'home' %}active{% endif %}">
-                    <a class="nav-link" href="{{ url_for('home.index')}}">Home</a>
-                </li>
-                <li class="nav-item {% if current_page == 'index' %}active{% endif %}">
-                    <a class="nav-link" href="{{ url_for('announcement.index')}}">Announcements</a>
-                </li>
-                <li class="nav-item {% if current_page == 'Profile' %}active{% endif %}">
-                    <a class="nav-link" href="{{ url_for('profile.index')}}">Profile</a>
-                </li>
-                <li class="nav-item {% if current_page == 'Tasks' %}active{% endif %}">
-                    <a class="nav-link" href="{{ url_for('task.index')}}">Tasks</a>
-                </li>
-                <li class="nav-item {% if current_page == 'Calendar' %}active{% endif %}">
-                    <a class="nav-link" href="{{ url_for('event.index')}}">Calendar</a>
-                </li>
-                {% if current_user.role.value == "Coordinator" %}
-                <li class="nav-item {% if current_page == 'Users' %}active{% endif %}">
-                    <a class="nav-link" href="{{ url_for('user.index')}}">Users</a>
-                </li>
-                <li class="nav-item {% if current_page == 'Codes' %}active{% endif %}">
-                    <a class="nav-link" href="{{ url_for('code.index')}}">Users</a>
-                </li>
-                {% endif %}
+                    <li class="nav-item {% if current_page == 'home' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('home.index')}}">Home</a>
+                    </li>
+                    <li class="nav-item {% if current_page == 'index' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('announcement.index')}}">Announcements</a>
+                    </li>
+                    <li class="nav-item {% if current_page == 'Profile' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('profile.index')}}">Profile</a>
+                    </li>
+                    <li class="nav-item {% if current_page == 'Tasks' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('task.index')}}">Tasks</a>
+                    </li>
+                    <li class="nav-item {% if current_page == 'Calendar' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('event.index')}}">Calendar</a>
+                    </li>
+                    {% if current_user.role.value == "Coordinator" %}
+                        <li class="nav-item {% if current_page == 'Users' %}active{% endif %}">
+                            <a class="nav-link" href="{{ url_for('user.index')}}">Users</a>
+                        </li>
+                        <li class="nav-item {% if current_page == 'Codes' %}active{% endif %}">
+                            <a class="nav-link" href="{{ url_for('code.index')}}">Codes</a>
+                        </li>
+                    {% endif %}
                 {% endif %}
             </ul>
 

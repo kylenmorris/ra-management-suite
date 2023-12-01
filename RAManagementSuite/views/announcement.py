@@ -8,6 +8,7 @@ announcement = Blueprint('announcement', __name__)
 
 
 @announcement.route('/')
+@login_required
 def index():
     current_page = 'index'
     announcements = announcementRepo.get_announcements()
@@ -15,6 +16,7 @@ def index():
 
 
 @announcement.route('/view/<int:announcement_id>')
+@login_required
 def view(announcement_id):
     current_page = 'view'
     announcement = announcementRepo.get_announcement(announcement_id)
@@ -22,6 +24,7 @@ def view(announcement_id):
 
 
 @announcement.route('/create', methods=('GET', 'POST'))
+@login_required
 def create():
     if current_user.role == UserRole.BASIC:
         flash('You do not have permission to create announcements.')
@@ -41,6 +44,7 @@ def create():
 
 
 @announcement.route('/edit/<int:announcement_id>/', methods=('GET', 'POST'))
+@login_required
 def edit(announcement_id):
     if current_user.role == UserRole.BASIC:
         flash('You do not have permission to create announcement.')
@@ -62,6 +66,7 @@ def edit(announcement_id):
 
 
 @announcement.route('/delete/<int:announcement_id>/')
+@login_required
 def delete(announcement_id):
     if current_user.role == UserRole.BASIC:
         flash('You do not have permission to create announcements.')

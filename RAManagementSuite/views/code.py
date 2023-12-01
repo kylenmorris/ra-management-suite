@@ -26,11 +26,14 @@ def index():
         abort(403, "ERROR 403: Current users does not have required access level")
     else:
         current_page = 'Codes'
-        all_codes = userRepo.get_all_users()
+        all_codes = signupCodeRepo.get_signup_codes()
 
         # it is irritatingly hard to do this through the db so just populate it on the get
+        for code in all_codes:
+            code.formatted_created = code.created.strftime('%b %d, %Y')
+            code.formatted_expires = (code.created + timedelta(days=7)).strftime('%b %d, %Y')  # week after creation
 
-        return render_template('user/index.html', all_codes=all_codes,
+        return render_template('code/index.html', all_codes=all_codes,
                                current_page=current_page, UserRole=UserRole)
 
 
@@ -38,14 +41,14 @@ def index():
 @login_required
 def create():
     signupCodeRepo.create_signup_code()
-    return redirect(url_for('user.index'))
+    return redirect(url_for('code.index'))
 
 
 @code.route('/delete/<int:code_id>', methods=['POST'])
 @login_required
 def delete(code_id):
     signupCodeRepo.delete_signup_code(code_id)
-    return redirect(url_for('user.index'))
+    return redirect(url_for('code.index'))
 
 
 # for code in all_codes:
