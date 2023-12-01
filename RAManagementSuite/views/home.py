@@ -14,7 +14,8 @@ from models import Event, UserRole, TaskPriority, User, TaskStatus, EventType
 from repos import announcementRepo, taskRepo
 from repos.eventRepo import create_event, get_all_events, update_event, delete_event
 
-# from RAManagementSuite.repos.taskRepo import create_task, get_all_tasks, get_task_by_id, update_task
+from repos.userRepo import update_user_profile, get_user_profile, get_user_by_id
+
 
 home = Blueprint('home', __name__)
 

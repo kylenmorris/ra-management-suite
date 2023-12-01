@@ -93,3 +93,13 @@ class Task(db.Model):
     creator = db.relationship('User', backref=db.backref('created_tasks', lazy='dynamic'))
     assigned_users = db.relationship('User', secondary='task_assignments',
                                      backref=db.backref('assigned_tasks', lazy='dynamic'))
+
+
+class Profile(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    phone_number = db.Column(db.Integer, nullable=True)
+    gender = db.Column(db.Text, nullable=True)
+    pronouns = db.Column(db.Text, nullable=True)
+    availability = db.Column(db.Text, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User', backref=db.backref('profile_info', lazy=True))
