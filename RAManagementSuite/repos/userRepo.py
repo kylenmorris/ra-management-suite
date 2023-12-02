@@ -45,6 +45,7 @@ def delete_user(user_id):
     if user is None:
         abort(500, "ERROR 500: User Not Found Can't Remove")
     else:
+        user.role = UserRole.BASIC
         user.deleted = True
         db.session.commit()
 
