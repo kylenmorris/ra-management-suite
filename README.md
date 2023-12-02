@@ -36,8 +36,8 @@ Press CTRL+C to quit
 ```
 Open a browser and go to the link returned (http://127.0.0.1:5000 for the example above)  
 There are some pre-made accounts for initial setup all using "password" as their password
-* `coordinator@test.com`
-* `senior@test.com`
-* `returner@test.com`
-* `basic@test.com`
+* coordinator@test.com
+* senior@test.com
+* returner@test.com
+* basic@test.com
 
