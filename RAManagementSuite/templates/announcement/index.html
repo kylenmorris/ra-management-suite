@@ -3,7 +3,9 @@
 {% block content %}
 <div class="d-flex align-items-center">
     <h1 style="margin-right: 20px;">{% block title %} Announcements {% endblock %}</h1>
+    {% if current_user.is_authenticated and current_user.role != UserRole.BASIC %}
     <a href="{{ url_for('announcement.create') }}" class="btn btn-outline-primary">New</a>
+    {% endif %}
 </div>
 
 {% for announcement in announcements|reverse %}
