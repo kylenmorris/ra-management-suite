@@ -282,7 +282,7 @@
         document.getElementById('deleteEventButton').addEventListener('click', function() {
             const eventId = document.getElementById('editEventId').value;
             if (eventId && confirm('Are you sure you want to delete this event?')) {
-                fetch(`/delete-event/${eventId}`, {
+                fetch(`/event/delete/${eventId}`, {
                     method: 'POST',
                 })
                 .then(response => response.json())
