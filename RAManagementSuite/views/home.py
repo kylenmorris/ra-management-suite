@@ -1,55 +1,32 @@
-from flask import Flask, Blueprint, render_template, request, url_for, flash, redirect
-from repos import announcementRepo
+import os
+from datetime import datetime
+
+from flask import Flask, Blueprint, render_template, request, url_for, flash, redirect, jsonify, abort
+from flask_login import login_required, current_user
+from models import UserRole
+from models import Event
+from datetime import datetime, timedelta
+from repos import announcementRepo, signupCodeRepo
+from repos.eventRepo import create_event, get_all_events, update_event, delete_event
+from repos import userRepo
+
+from models import Event, UserRole, TaskPriority, User, TaskStatus, EventType
+from repos import announcementRepo, taskRepo
+from repos.eventRepo import create_event, get_all_events, update_event, delete_event
+
+from repos.userRepo import update_user_profile, get_user_profile, get_user_by_id
+
 
 home = Blueprint('home', __name__)
 
 
 @home.route('/')
+@login_required
 def index():
+    if current_user.is_anonymous:
+        return redirect(url_for('auth.login'))
+    current_page = 'home'
     announcements = announcementRepo.get_announcements()
-    return render_template('home/index.html', announcements=announcements)
-
-
-@home.route('/view/<int:announcement_id>')
-def announcement(announcement_id):
-    announcement = announcementRepo.get_announcement(announcement_id)
-    return render_template('home/view.html', announcement=announcement)
-
-
-@home.route('/create', methods=('GET', 'POST'))
-def create():
-    if request.method == 'POST':
-        title = request.form['title']
-        content = request.form['content']
-        if not title:
-            flash('Title is required!')
-        else:
-            announcementRepo.create_announcement(title, content)
-            return redirect(url_for('home.index'))
-
-    return render_template('home/create.html')
-
-
-@home.route('/edit/<int:announcement_id>/', methods=('GET', 'POST'))
-def edit(announcement_id):
-    announcement = announcementRepo.get_announcement(announcement_id)
-
-    if request.method == 'POST':
-        title = request.form['title']
-        content = request.form['content']
-        if not title:
-            flash('Title is required!')
-        else:
-            announcementRepo.edit_announcement(title, content, announcement_id)
-            return redirect(url_for('home.index'))
-
-    return render_template('home/edit.html', announcement=announcement)
-
-
-
-
-
-
-
-
-
+    tasks = taskRepo.get_tasks_by_user(current_user.id)
+    return render_template('home/index.html', announcements=announcements, tasks=tasks,
+                           TaskPriority=TaskPriority, current_page=current_page)

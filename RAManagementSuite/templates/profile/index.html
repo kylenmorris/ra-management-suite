@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-3 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                <img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
+                <span class="font-weight-bold">{{ user.name }}</span>
+                <span class="text-black-50">{{ user.email }}</span><span> </span>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <form method="POST" action="{{ url_for('profile.index') }}">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">Profile Settings</h4>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label class="labels">Name</label>
+                            <input type="text" class="form-control"  name="name" placeholder="Name" value="{{ user.name }}" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="labels">Phone Number</label>
+                            <input type="text" class="form-control" name="phone_number" placeholder="Enter Phone Number" value="{{ profile.phone_number if profile.phone_number else '' }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label class="labels">Gender</label>
+                            <select class="form-control" name="gender" id="genderSelect" readonly>
+                                <option value="" selected disabled>Select Gender</option>
+                                <option value="male" {% if profile.gender == 'male' %}selected{% endif %}>Male</option>
+                                <option value="female" {% if profile.gender == 'female' %}selected{% endif %}>Female</option>
+                                <option value="other" {% if profile.gender == 'other' %}selected{% endif %}>Other</option>
+                                <option value="prefer not to say" {% if profile.gender == 'prefer not to say' %}selected{% endif %}>Prefer not to say</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="labels">Pronouns</label>
+                            <select class="form-control" name="pronouns" readonly>
+                                <option value="" selected disabled>Select Pronouns</option>
+                                <option value="he" {% if profile.pronouns == 'he' %}selected{% endif %}>He/Him</option>
+                                <option value="she" {% if profile.pronouns == 'she' %}selected{% endif %}>She/Her</option>
+                                <option value="they" {% if profile.pronouns == 'they' %}selected{% endif %}>They/Them</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="row mt-3">
+                            <div class="col-md-6">
+                                <label class="labels">Shift Availability</label>
+                                <input type="text" class="form-control" name="availability" placeholder="Enter shift Availability" value="{{ profile.availability if profile.availability else '' }}" readonly>
+                            </div>
+                        </div>
+                    {% if current_user.id == user.id %}
+                    <div class="mt-5 text-center">
+                        <button class="btn btn-primary profile-button" id="edit-profile-button" type="button">Edit Profile</button>
+                        <button class="btn btn-success profile-button" id="save-profile-button" type="submit" style="display: none;">Save Changes</button>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const editProfileButton = document.getElementById("edit-profile-button");
+    const saveProfileButton = document.getElementById("save-profile-button");
+    const editableFields = document.querySelectorAll(".form-control[readonly], select[readonly]");
+
+    editProfileButton.addEventListener("click", () => {
+        editableFields.forEach(field => field.removeAttribute("readonly"));
+        editProfileButton.style.display = "none";
+        saveProfileButton.style.display = "block";
+    });
+</script>
+
+{% endblock %}

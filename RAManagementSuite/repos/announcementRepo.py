@@ -1,62 +1,43 @@
-import sqlite3
-from repos.baseRepo import get_db_connection
+from models import Announcement
+from extensions import db
 from werkzeug.exceptions import abort
 
 
 def get_announcement(announcement_id):
-    """
-    Gets a single announcement by id.
-    Aborts if no announcement is found.
-    :param announcement_id: Announcement id
-    :return: Single announcement
-    """
-    conn = get_db_connection()
-    announcement = conn.execute('SELECT * FROM announcements WHERE id = ?',
-                                (announcement_id,)).fetchone()
-    conn.close()
+    announcement = Announcement.query.filter_by(id=announcement_id).first()
     if announcement is None:
         abort(404)
     return announcement
 
 
 def get_announcements():
-    """
-    Gets all existing announcements.
-    :return: list of announcements
-    """
-    conn = get_db_connection()
-    announcements = conn.execute('SELECT * FROM announcements').fetchall()
-    conn.close()
-
-    return announcements
+    return Announcement.query.all()
 
 
-def create_announcement(title, content):
-    """
-    Creates a new announcement.
-    :param title: announcement title (string)
-    :param content: announcement content (string)
-    :return: none
-    """
-    conn = get_db_connection()
-    conn.execute('INSERT INTO announcements (title, content) VALUES (?, ?)',
-                 (title, content))
-    conn.commit()
-    conn.close()
+def create_announcement(title, content, user_id):
+    announcement = Announcement(title=title, content=content, user_id=user_id)
+    db.session.add(announcement)
+    db.session.commit()
 
 
 def edit_announcement(title, content, id):
-    """
-    Edits an existing announcement.
-    No error handling if announcement does not exist.
-    :param title: announcement title (string)
-    :param content: announcement content (string)
-    :return: none
-    """
-    conn = get_db_connection()
-    conn.execute('UPDATE announcements SET title = ?, content = ?'
-                 ' WHERE id = ?',
-                 (title, content, id))
-    conn.commit()
-    conn.close()
+    announcement = Announcement.query.filter_by(id=id).first()
+    if announcement:
+        announcement.title = title
+        announcement.content = content
+        db.session.commit()
 
+
+def del_announcement(id):
+    try:
+        announcement = Announcement.query.get(id)
+        if announcement:
+            db.session.delete(announcement)
+            db.session.commit()
+            return True  # Return a success indicator
+        else:
+            return False  # Return a failure indicator (announcement not found)
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        db.session.rollback()
+        return False  # Return a failure indicator

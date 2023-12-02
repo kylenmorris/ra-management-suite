@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Task{% endblock %}
+
+{% block content %}
+<h2>Create New Task</h2>
+<form method="post">
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+    </div>
+    <div class="form-group">
+        <label for="deadline">Deadline</label>
+        <input type="datetime-local" class="form-control" id="deadline" name="deadline" required>
+    </div>
+    <div class="form-group">
+        <label for="priority">Priority</label>
+        <select class="form-control" id="priority" name="priority" required>
+            <option value="LOW">Low</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="assigned_users">Assign to</label>
+        <select multiple class="form-control" id="assigned_users" name="assigned_users" required>
+            {% for user in users %}
+            <option value="{{ user.id }}">{{ user.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Task</button>
+</form>
+{% endblock %}

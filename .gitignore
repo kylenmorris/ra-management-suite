@@ -1,4 +1,7 @@
 RAManagementSuite/repos/__pycache__/
 RAManagementSuite/views/__pycache__/
 RAManagementSuite/__pycache__/
+migrations/versions/__pycache__/
+migrations/__pycache__/
 .idea/
+RAManagementSuite/database.db

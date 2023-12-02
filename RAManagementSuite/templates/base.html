@@ -5,29 +5,73 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        .custom-btn {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+    </style>
+
 
     <title>{% block title %} {% endblock %}</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-md navbar-light bg-light">
+    <nav class="navbar navbar-dark bg-dark navbar-expand-md ">
         <a class="navbar-brand" href="{{ url_for('home.index')}}">RA Management Suite</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">About</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{url_for('home.create')}}">New Announcement</a>
-            </li>
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item {% if current_page == 'home' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('home.index')}}">Home</a>
+                    </li>
+                    <li class="nav-item {% if current_page == 'index' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('announcement.index')}}">Announcements</a>
+                    </li>
+                    <li class="nav-item {% if current_page == 'Profile' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('profile.index')}}">Profile</a>
+                    </li>
+                    <li class="nav-item {% if current_page == 'Tasks' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('task.index')}}">Tasks</a>
+                    </li>
+                    <li class="nav-item {% if current_page == 'Calendar' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('event.index')}}">Calendar</a>
+                    </li>
+                    {% if current_user.role.value == "Coordinator" %}
+                        <li class="nav-item {% if current_page == 'Users' %}active{% endif %}">
+                            <a class="nav-link" href="{{ url_for('user.index')}}">Users</a>
+                        </li>
+                        <li class="nav-item {% if current_page == 'Codes' %}active{% endif %}">
+                            <a class="nav-link" href="{{ url_for('code.index')}}">Codes</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+
+            <ul class="navbar-nav ml-auto">
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="btn btn-primary custom-btn" href="{{ url_for('auth.logout')}}">Logout</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="btn btn-primary custom-btn" href="{{ url_for('auth.login')}}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-primary custom-btn ml-2" href="{{ url_for('auth.signup')}}">Sign Up</a>
+                </li>
+                {% endif %}
             </ul>
         </div>
     </nav>
-    <div class="container">
+    <div class="container pt-5">
         {% block content %} {% endblock %}
     </div>
 

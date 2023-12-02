@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex align-items-center">
+    <h1 style="margin-right: 20px;">{% block title %} Announcements {% endblock %}</h1>
+    {% if current_user.is_authenticated and current_user.role != UserRole.BASIC %}
+    <a href="{{ url_for('announcement.create') }}" class="btn btn-outline-primary">New</a>
+    {% endif %}
+</div>
+
+{% for announcement in announcements|reverse %}
+    <div class="announcement-item">
+        <a href="{{ url_for('announcement.view', announcement_id=announcement['id']) }}">
+            <h2>{{ announcement['title'] }}</h2>
+        </a>
+        <span class="badge badge-primary">{{ announcement['created']}}</span>
+
+        {% if announcement.user %}
+            <div class="user-info d-flex align-items-center">
+                <p class="mr-2 mb-0">{{ announcement.user.name }}</p>
+                {% if current_user.is_authenticated and (current_user.id == announcement.user.id or current_user.role == UserRole.COORDINATOR) %}
+                <a href="{{ url_for('announcement.edit', announcement_id=announcement['id']) }}" class="badge badge-warning">Edit</a>
+                <a href="#" class="badge badge-danger" data-toggle="modal" data-target="#deleteModal-{{ announcement['id'] }}">Delete</a>
+                {% endif %}
+
+            </div>
+
+            <!-- Delete Confirmation Modal -->
+            <div class="modal" id="deleteModal-{{ announcement['id'] }}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Delete Confirmation</h5>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete this announcement?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <a href="{{ url_for('announcement.delete', announcement_id=announcement['id']) }}" class="btn btn-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <hr>
+    </div>
+{% endfor %}
+{% endblock %}
